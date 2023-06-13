@@ -1,8 +1,8 @@
-import { openaiClient } from "../utils/openaiClient";
-import { supabaseClient } from "../utils/supabaseClient";
+import { openaiClient } from "@/utils/openaiClient";
+import { supabaseClient } from "@/utils/supabaseClient";
 
-import profitShare from "../src/documents/profit-share.json";
-import companyCulture from "../src/documents/ company-culture.json";
+import profitShare from "@/documents/profit-share.json";
+import companyCulture from "@/documents/ company-culture.json";
 
 type Document = {
   title: string,
@@ -11,9 +11,10 @@ type Document = {
 }
 
 const generateEmbeddings = async (documents: Document[]) => {
-  console.log("creating embeddings...");
+  console.log("creating embeddings started...");
 
   for (const document of documents) {
+    console.log("embedding for doc", document.title);
     const input = document.content.replace(/\n/g, ' ');
 
     const embeddingResponse = await openaiClient.createEmbedding({
@@ -23,7 +24,7 @@ const generateEmbeddings = async (documents: Document[]) => {
 
     const [{ embedding }] = embeddingResponse.data.data;
 
-    // // In production we should handle possible errors
+    // In production we should handle possible errors
     await supabaseClient.from('documents').insert({
       title: document.title,
       content: document.content,
