@@ -4,7 +4,7 @@ import {openaiClient} from "@/utils/openaiClient";
 import {supabaseClient} from "@/utils/supabaseClient";
 import {OpenAIModel} from "@/types";
 import dedent from "ts-dedent";
-import {CreateCompletionRequest} from "openai/api";
+import {ChatCompletionRequestMessage, CreateChatCompletionRequest} from "openai/api";
 
 type Data = {
   answer: string
@@ -41,28 +41,25 @@ export default async function handler(
     const contentChunk = chunks[0];
     const contentText = `${contentChunk.content.trim()}\n---\n`;
 
-    const prompt = dedent`You are very enthusiastic representative of Productdock company who loves to help it's employees. Given the following:
+    const systemContext = dedent`You are very enthusiastic representative of Productdock company who loves to help employees. Given the following:
 
       Context section:
       ${contentText}
 
-      Question: """
-      ${input}
-      """
-
       Answer the questions as truthfully as possible, and if you're unsure of the answer, say 'Sorry, I don't know the answer at this moment. Please refer to the official documentation ${contentChunk.docsurl}'
     `
-    console.log("PROMPT", prompt);
+    console.log("PROMPT", systemContext);
 
-    const request: CreateCompletionRequest = {
-      model: "text-davinci-003",
-      prompt,
+    const messages: Array<ChatCompletionRequestMessage> = [{"role": "system", "content": systemContext}, {"role": "user", "content": input}];
+    const chatCompletionRequest: CreateChatCompletionRequest = {
+      model: OpenAIModel.DAVINCI_TURBO,
+      messages,
       max_tokens: 512,
       temperature: 0,
     };
 
-    const completionResponse = await openaiClient.createCompletion(request);
-    const answer = completionResponse.data?.choices[0]?.text;
+    const completionResponse = await openaiClient.createChatCompletion(chatCompletionRequest);
+    const answer = completionResponse.data?.choices[0]?.message?.content || "";
     console.log("COMPLETION ANSWER", answer);
 
     if (completionResponse.status !== 200) {
