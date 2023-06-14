@@ -1,41 +1,48 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import type {NextApiRequest, NextApiResponse} from 'next'
-import {openaiClient} from "@/utils/openaiClient";
-import {supabaseClient} from "@/utils/supabaseClient";
-import {OpenAIModel} from "@/types";
+import type { NextApiRequest, NextApiResponse } from "next";
+import { openaiClient } from "@/utils/openaiClient";
+import { supabaseClient } from "@/utils/supabaseClient";
+import { OpenAIModel } from "@/types";
 import dedent from "ts-dedent";
-import {ChatCompletionRequestMessage, CreateChatCompletionRequest, CreateEmbeddingResponse} from "openai/api";
-import {AxiosResponse} from "axios";
+import {
+  ChatCompletionRequestMessage,
+  CreateChatCompletionRequest,
+  CreateEmbeddingResponse,
+} from "openai/api";
+import { AxiosResponse } from "axios";
 
 type Data = {
-  answer: string
-}
+  answer: string;
+};
 
 type Chunk = {
-  title: string,
-  content: string,
-  docsurl: string
-}
+  title: string;
+  content: string;
+  docsurl: string;
+};
 
-async function getQueryEmbedding(input: string): Promise<AxiosResponse<CreateEmbeddingResponse>> {
+async function getQueryEmbedding(
+  input: string
+): Promise<AxiosResponse<CreateEmbeddingResponse>> {
   return await openaiClient.createEmbedding({
     model: OpenAIModel.EMBEDDING,
-    input
+    input,
   });
 }
 
-async function getContentFromDB(embedding: Array<number>): Promise<{ data: Array<Chunk>, error: any }> {
-  const {data, error} = await supabaseClient.rpc("match_documents", {
+async function getContentFromDB(
+  embedding: Array<number>
+): Promise<{ data: Array<Chunk>; error: any }> {
+  const { data, error } = await supabaseClient.rpc("match_documents", {
     query_embedding: embedding,
     match_threshold: 0.01,
-    match_count: 2
+    match_count: 2,
   });
 
-  return {data, error};
+  return { data, error };
 }
 
 function extractQuestionFromRequest(req: NextApiRequest): string {
-  const {question} = req.body;
+  const { question } = req.body;
   return question.replace(/\n/g, " ");
 }
 
@@ -47,14 +54,21 @@ function getSystemContext(contentText: string, docsUrl: string): string {
 
       Answer the questions as truthfully as possible, and if you're unsure of the answer, say 'Sorry, I don't know the answer at this moment. 
       Please refer to the official documentation ${docsUrl}'
-    `
+    `;
 }
 
-function createChatCompletionMessages(contentText: string, docsUrl: string, input: string): Array<ChatCompletionRequestMessage> {
-  return [{"role": "system", "content": getSystemContext(contentText, docsUrl)}, {
-    "role": "user",
-    "content": input
-  }];
+function createChatCompletionMessages(
+  contentText: string,
+  docsUrl: string,
+  input: string
+): Array<ChatCompletionRequestMessage> {
+  return [
+    { role: "system", content: getSystemContext(contentText, docsUrl) },
+    {
+      role: "user",
+      content: input,
+    },
+  ];
 }
 
 export default async function handler(
@@ -68,9 +82,9 @@ export default async function handler(
     // https://github.com/supabase-community/nextjs-openai-doc-search/blob/main/pages/api/vector-search.ts
 
     const queryEmbedding = await getQueryEmbedding(input);
-    const [{embedding}] = queryEmbedding.data.data;
+    const [{ embedding }] = queryEmbedding.data.data;
 
-    const {data: chunks, error} = await getContentFromDB(embedding);
+    const { data: chunks, error } = await getContentFromDB(embedding);
     // TODO: handle error case
 
     const contentChunk = chunks[0];
@@ -84,7 +98,9 @@ export default async function handler(
       temperature: 0,
     };
 
-    const completionResponse = await openaiClient.createChatCompletion(chatCompletionRequest);
+    const completionResponse = await openaiClient.createChatCompletion(
+      chatCompletionRequest
+    );
     const answer = completionResponse.data?.choices[0]?.message?.content || "";
     console.log("COMPLETION ANSWER", answer);
 
@@ -92,7 +108,7 @@ export default async function handler(
       res.status(completionResponse.status);
     }
 
-    res.status(200).json({answer});
+    res.status(200).json({ answer });
   } catch (error) {
     console.error(error);
     res.status(500);

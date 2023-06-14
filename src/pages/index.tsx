@@ -1,24 +1,23 @@
-import {useState} from "react";
-import Image from 'next/image'
-import { QueryClient, QueryClientProvider, useMutation } from 'react-query';
-import { Inter } from 'next/font/google'
-import {Answer} from "@/components/Answer";
+import { useState } from "react";
+import { QueryClient, QueryClientProvider, useMutation } from "react-query";
+import { Inter } from "next/font/google";
+import { Answer } from "@/components/Answer";
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({ subsets: ["latin"] });
 
 const queryClient = new QueryClient();
 
 const createQuestion = async (question) => {
-  const response = await fetch('/api/answer', {
-    method: 'POST',
+  const response = await fetch("/api/answer", {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
     body: JSON.stringify(question),
   });
 
   if (!response.ok) {
-    throw new Error('Failed to create post');
+    throw new Error("Failed to create post");
   }
 
   return response.json();
@@ -26,32 +25,37 @@ const createQuestion = async (question) => {
 
 function PDChat() {
   const mutation = useMutation(createQuestion);
-  const [question, setQuestion] = useState('');
+  const [question, setQuestion] = useState("");
 
   const handleCreateQuestion = async () => {
     try {
       const postData = { question };
 
-      console.log("post data", postData)
+      console.log("post data", postData);
       await mutation.mutateAsync(postData);
     } catch (error) {
-      console.error('Failed to create post:', error);
+      console.error("Failed to create post:", error);
     }
   };
 
-
   return (
     <>
-      <div className='container'>
+      <div className="container">
         <h1>Productdock GPT Chat</h1>
-        <div className='question'>
+        <div className="question">
           <input
             type="text"
             value={question}
             onChange={(e) => setQuestion(e.target.value)}
             placeholder="Your question"
           />
-          <button className='submit-btn' onClick={handleCreateQuestion} disabled={mutation.isLoading}>Sumbit question</button>
+          <button
+            className="submit-btn"
+            onClick={handleCreateQuestion}
+            disabled={mutation.isLoading}
+          >
+            Sumbit question
+          </button>
         </div>
       </div>
       {mutation.isLoading && <p> Loading... </p>}
@@ -69,7 +73,7 @@ function QClient() {
     <QueryClientProvider client={queryClient}>
       <PDChat />
     </QueryClientProvider>
-  )
+  );
 }
 
 export default function Home() {
@@ -77,9 +81,7 @@ export default function Home() {
     <main
       className={`flex min-h-screen flex-col items-center justify-between p-24 ${inter.className}`}
     >
-      <QClient/>
+      <QClient />
     </main>
-  )
+  );
 }
-
-
