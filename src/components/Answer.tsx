@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import "./Answer.module.css";
+
+import styles from "./Answer.module.css";
 
 export const Answer = ({ text }) => {
   const [words, setWords] = useState([]);
@@ -13,7 +14,7 @@ export const Answer = ({ text }) => {
       {words.map((word, index) => (
         <span
           key={index}
-          className="fadeIn"
+          className={styles.fadeIn}
           style={{ animationDelay: `${index * 0.05}s` }}
         >
           {word}{" "}
