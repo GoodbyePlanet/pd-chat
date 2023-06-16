@@ -57,7 +57,7 @@ function createSystemContext(contentText: string, docsUrl: string): string {
       ${contentText}
 
       Answer the questions as truthfully as possible, and if you're unsure of the answer, say 'Sorry, I don't know the answer at this moment. 
-      Please refer to the official documentation ${docsUrl}'
+      Please refer to the official documentation ${docsUrl}, or ask directly your Unit lead manager.
     `;
 }
 
@@ -80,7 +80,7 @@ function createChatCompletionRequest(
   input: string
 ): CreateChatCompletionRequest {
   const contentChunk = chunks[0];
-  const contentText = `${contentChunk.content.trim()}\n---\n`;
+  const contentText = `${contentChunk.content.trim()}\n`;
   const docsUrl = contentChunk.docsurl;
 
   return {
