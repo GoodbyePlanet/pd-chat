@@ -14,6 +14,10 @@ type Data = {
   answer: string;
 };
 
+type ErrorResponse = {
+  message: string;
+};
+
 type Chunk = {
   title: string;
   content: string;
@@ -41,19 +45,19 @@ async function getContentFromDB(
   return { data, error };
 }
 
-function extractQuestionFromRequest(req: NextApiRequest): string {
+function extractAndSanitizeQuestion(req: NextApiRequest): string {
   const { question } = req.body;
-  return question.replace(/\n/g, " ");
+  return question.trim().replace(/\n/g, " ");
 }
 
-function getSystemContext(contentText: string, docsUrl: string): string {
+function createSystemContext(contentText: string, docsUrl: string): string {
   return dedent`You are very enthusiastic representative of Productdock company who loves to help employees. Given the following:
 
       Context section:
       ${contentText}
 
       Answer the questions as truthfully as possible, and if you're unsure of the answer, say 'Sorry, I don't know the answer at this moment. 
-      Please refer to the official documentation ${docsUrl}'
+      Please refer to the official documentation ${docsUrl} or ask directly your Unit lead manager.
     `;
 }
 
@@ -63,7 +67,7 @@ function createChatCompletionMessages(
   input: string
 ): Array<ChatCompletionRequestMessage> {
   return [
-    { role: "system", content: getSystemContext(contentText, docsUrl) },
+    { role: "system", content: createSystemContext(contentText, docsUrl) },
     {
       role: "user",
       content: input,
@@ -71,46 +75,64 @@ function createChatCompletionMessages(
   ];
 }
 
+function createChatCompletionRequest(
+  chunks: Array<Chunk>,
+  input: string
+): CreateChatCompletionRequest {
+  const contentChunk = chunks[0];
+  const contentText = `${contentChunk.content.trim()}\n`;
+  const docsUrl = contentChunk.docsurl;
+
+  return {
+    model: OpenAIModel.DAVINCI_TURBO,
+    messages: createChatCompletionMessages(contentText, docsUrl, input),
+    max_tokens: 512,
+    temperature: 0,
+  };
+}
+
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Data>
+  res: NextApiResponse<Data | ErrorResponse>
 ) {
   try {
-    const input = extractQuestionFromRequest(req);
+    const input = extractAndSanitizeQuestion(req);
+    const moderationResponse = await openaiClient.createModeration({ input });
 
-    // TODO: Moderate the content to comply with OpenAI T&C
-    // https://github.com/supabase-community/nextjs-openai-doc-search/blob/main/pages/api/vector-search.ts
-
-    const queryEmbedding = await getQueryEmbedding(input);
-    const [{ embedding }] = queryEmbedding.data.data;
-
-    const { data: chunks, error } = await getContentFromDB(embedding);
-    // TODO: handle error case
-
-    const contentChunk = chunks[0];
-    const contentText = `${contentChunk.content.trim()}\n---\n`;
-    const docsUrl = contentChunk.docsurl;
-
-    const chatCompletionRequest: CreateChatCompletionRequest = {
-      model: OpenAIModel.DAVINCI_TURBO,
-      messages: createChatCompletionMessages(contentText, docsUrl, input),
-      max_tokens: 512,
-      temperature: 0,
-    };
-
-    const completionResponse = await openaiClient.createChatCompletion(
-      chatCompletionRequest
-    );
-    const answer = completionResponse.data?.choices[0]?.message?.content || "";
-    console.log("COMPLETION ANSWER", answer);
-
-    if (completionResponse.status !== 200) {
-      res.status(completionResponse.status);
+    if (moderationResponse.data?.results?.flagged) {
+      res.status(400).json({ message: "Flagged content!" });
     }
 
+    const queryEmbedding = await getQueryEmbedding(input);
+
+    if (queryEmbedding.status !== 200) {
+      res
+        .status(500)
+        .json({ message: "Failed to create an embedding for question!" });
+    }
+
+    const [{ embedding }] = queryEmbedding.data.data;
+    const { data: chunks, error: matchError } = await getContentFromDB(
+      embedding
+    );
+
+    if (matchError) {
+      console.error("Match error", matchError);
+      res.status(500).json({ message: "Failed to match any document!" });
+    }
+
+    const completionResponse = await openaiClient.createChatCompletion(
+      createChatCompletionRequest(chunks, input)
+    );
+
+    if (completionResponse.status !== 200) {
+      res.status(500).json({ message: "Failed to create chat completion!" });
+    }
+
+    const answer = completionResponse.data?.choices[0]?.message?.content || "";
     res.status(200).json({ answer });
-  } catch (error) {
-    console.error(error);
-    res.status(500);
+  } catch (error: unknown) {
+    console.error("An error occurred", error);
+    res.status(500).json({ message: error.message });
   }
 }
