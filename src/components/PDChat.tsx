@@ -36,7 +36,7 @@ export default function PDChat(): ReactElement {
 
   return (
     <div className={styles.container}>
-      <h3 className="text-center mb-5 text-pd text-5xl font-bold">PD Chat</h3>
+      <h3 className="mb-5 text-center text-5xl font-bold text-pd">PD Chat</h3>
       <SearchBox onSearch={handleCreateQuestion} />
       {mutation.isLoading && <p> Loading... </p>}
       {mutation.isSuccess && (
