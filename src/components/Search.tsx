@@ -1,4 +1,4 @@
-import React, { useState, ReactElement } from "react";
+import React, { useState, ReactElement, FormEvent } from "react";
 
 interface Props {
   onSearch: (question: string) => {};
@@ -7,7 +7,7 @@ interface Props {
 export default function SearchBox({ onSearch }: Props): ReactElement {
   const [question, setQuestion] = useState("");
 
-  const handleSearchSubmit = (event): void => {
+  const handleSearchSubmit = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
 
     if (onSearch) {

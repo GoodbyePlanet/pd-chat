@@ -1,8 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { ReactElement, useEffect, useState } from "react";
 
 import styles from "./Answer.module.css";
 
-export const Answer = ({ text }) => {
+interface Props {
+  text: string;
+}
+
+export const Answer = ({ text }: Props): ReactElement => {
   const [words, setWords] = useState([]);
 
   useEffect(() => {
@@ -22,7 +26,7 @@ export const Answer = ({ text }) => {
               target="_blank"
               rel="noopener noreferrer"
             >
-              {word}
+              {word}{" "}
             </a>
           );
         }
