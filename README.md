@@ -30,7 +30,6 @@ Steps:
 supabase init
 supabase login
 supabase link --project-ref <project-ref>
-supabase db dump -f supabase/schema.sql -- to get schema from remote db
 ```
 If you have issues with connecting to Docker this will help - (https://eshlox.net/2023/02/26/supabase-cli-cannot-connect-to-the-docker-daemon/)
 
