@@ -2,6 +2,7 @@ import { ReactElement } from "react";
 import { useMutation } from "react-query";
 import SearchBox from "@/components/Search";
 import { Answer } from "@/components/Answer";
+import styles from "./Loader.module.css";
 
 const createQuestion = async (question: {
   question: string;
@@ -36,7 +37,7 @@ export default function PDChat(): ReactElement {
     <div className="w-4/5 md:w-3/5 lg:w-3/5">
       <h3 className="mb-5 text-center text-5xl font-bold text-pd">PD Chat</h3>
       <SearchBox onSearch={handleCreateQuestion} />
-      {mutation.isLoading && <p> Loading... </p>}
+      {mutation.isLoading && <span className={styles.loader}></span>}
       {mutation.isSuccess && (
         <div className="mt-8">
           <Answer text={mutation.data?.answer as string} />
