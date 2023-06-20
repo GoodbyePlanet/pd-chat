@@ -31,15 +31,13 @@ export const Answer = ({ question, text }: Props): ReactElement => {
     setIsTextComplete(false);
     setIsWrongAnswerSubmitted(true);
 
-    const response = await fetch("/api/wrong-answer", {
+    await fetch("/api/wrong-answer", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ question, answer: text }),
     });
-
-    console.log("RESPONSE", response);
   };
 
   return (
