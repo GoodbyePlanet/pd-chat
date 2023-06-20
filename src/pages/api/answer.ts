@@ -131,7 +131,7 @@ export default async function handler(
 
     const answer = completionResponse.data?.choices[0]?.message?.content || "";
     res.status(200).json({ answer });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error("An error occurred", error);
     res.status(500).json({ message: error.message });
   }

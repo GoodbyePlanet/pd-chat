@@ -40,7 +40,10 @@ export default function PDChat(): ReactElement {
       {mutation.isLoading && <span className={styles.loader}></span>}
       {mutation.isSuccess && (
         <div className="mt-8">
-          <Answer text={mutation.data?.answer as string} />
+          <Answer
+            question={mutation.variables?.question as string}
+            text={mutation.data?.answer as string}
+          />
         </div>
       )}
     </div>
