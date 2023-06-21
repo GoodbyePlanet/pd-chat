@@ -1,14 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { openaiClient } from "@/utils/openaiClient";
-import { supabaseClient } from "@/utils/supabaseClient";
-import { OpenAIModel } from "@/types";
-import dedent from "ts-dedent";
 import {
   ChatCompletionRequestMessage,
   CreateChatCompletionRequest,
-  CreateEmbeddingResponse,
 } from "openai/api";
-import { AxiosResponse } from "axios";
+import dedent from "ts-dedent";
+import { openaiClient } from "@/utils/openaiClient";
+import { supabaseClient } from "@/utils/supabaseClient";
+import { OpenAIModel } from "@/types";
 
 type Data = {
   answer: string;
@@ -24,9 +22,7 @@ type Chunk = {
   docsurl: string;
 };
 
-async function getQueryEmbedding(
-  input: string
-): Promise<AxiosResponse<CreateEmbeddingResponse>> {
+async function getQueryEmbedding(input: string) {
   return await openaiClient.createEmbedding({
     model: OpenAIModel.EMBEDDING,
     input,
@@ -99,7 +95,7 @@ export default async function handler(
     const input = extractAndSanitizeQuestion(req);
     const moderationResponse = await openaiClient.createModeration({ input });
 
-    if (moderationResponse.data?.results?.flagged) {
+    if (moderationResponse.data?.results[0]?.flagged) {
       res.status(400).json({ message: "Flagged content!" });
     }
 
