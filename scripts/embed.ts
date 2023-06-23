@@ -2,7 +2,10 @@ import { openaiClient } from "@/utils/openaiClient";
 import { supabaseClient } from "@/utils/supabaseClient";
 
 import profitShare from "@/documents/profit-share.json";
-import companyCulture from "@/documents/company-culture.json";
+import cultureAndBenefits from "@/documents/culture-benefits.json";
+import knowledgeSharing from "@/documents/knowledge-sharing.json";
+import logs from "@/documents/logs.json";
+import vacationDaysOff from "@/documents/vacation-days-off.json";
 
 type Document = {
   title: string;
@@ -24,7 +27,7 @@ const generateEmbeddings = async (documents: Document[]) => {
 
     const [{ embedding }] = embeddingResponse.data.data;
 
-    // In production we should handle possible errors
+    // In production, we should handle possible errors
     await supabaseClient.from("documents").insert({
       title: document.title,
       content: document.content,
@@ -35,6 +38,12 @@ const generateEmbeddings = async (documents: Document[]) => {
 };
 
 (async () => {
-  const documents: Document[] = [profitShare, companyCulture];
+  const documents: Document[] = [
+    profitShare,
+    cultureAndBenefits,
+    knowledgeSharing,
+    logs,
+    vacationDaysOff,
+  ];
   await generateEmbeddings(documents);
 })();
