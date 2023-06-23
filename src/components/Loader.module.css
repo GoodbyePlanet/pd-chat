@@ -6,7 +6,7 @@
     margin:  auto;
     position: absolute;
     left: 50%;
-    top: 62%;
+    top: 66%;
     color: var(--pd);
     box-sizing: border-box;
     animation: animloader 1s linear infinite alternate;

@@ -73,7 +73,7 @@ const WrongAnswer = ({
       <button
         type="submit"
         onClick={onSubmitWrongAnswer}
-        className="focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 mt-2 block rounded-lg bg-pd px-3 py-2 text-center text-xs font-medium text-white hover:bg-pd focus:outline-none focus:ring-4"
+        className="focus:ring-red-300 mt-2 block rounded-lg bg-red px-3 py-2 text-center text-xs font-medium text-white hover:bg-red focus:outline-none focus:ring-4"
       >
         Submit wrong answer
       </button>

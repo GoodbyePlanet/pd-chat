@@ -11,7 +11,7 @@ module.exports = {
       current: "currentColor",
       white: "#ffffff",
       purple: "#3f3cbb",
-      midnight: "#121063",
+      red: "#b90202",
       metal: "#565584",
       tahiti: "#3ab7bf",
       silver: "#ecebff",

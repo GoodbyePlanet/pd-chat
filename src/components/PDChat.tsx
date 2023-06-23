@@ -36,10 +36,17 @@ export default function PDChat(): ReactElement {
   return (
     <div className="w-4/5 md:w-3/5 lg:w-3/5">
       <h3 className="mb-5 text-center text-5xl font-bold text-pd">PD Chat</h3>
+      <p className="mb-5 text-center italic">
+        Please note that this is the MVP version, it might give you a wrong
+        answer. We kindly request you to submit any such instances so that we
+        can improve them in future iterations. Presently, you can inquire about
+        the following topics: Profit Share, Knowledge Sharing, Company Culture,
+        Vacation and Days Off, Benefits, and Time Tracking.
+      </p>
       <SearchBox onSearch={handleCreateQuestion} />
       {mutation.isLoading && <span className={styles.loader}></span>}
       {mutation.isSuccess && (
-        <div className="mt-8">
+        <div className="mt-5">
           <Answer
             question={mutation.variables?.question as string}
             text={mutation.data?.answer as string}
