@@ -85,7 +85,7 @@ const GratitudeText = (): ReactElement => (
   <div className="mt-4">
     <span className="font-semibold italic">
       Thank you for submitting wrong answer. We will try to improve our response
-      in the next iterations!
+      in next iterations!
     </span>
   </div>
 );
