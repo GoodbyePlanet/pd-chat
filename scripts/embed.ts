@@ -13,27 +13,31 @@ type Document = {
   docsUrl: string;
 };
 
-const generateEmbeddings = async (documents: Document[]) => {
+const generateEmbeddings = async (documents: Document[]): Promise<void> => {
   console.log("creating embeddings started...");
 
-  for (const document of documents) {
-    console.log("embedding for doc", document.title);
-    const input = document.content.replace(/\n/g, " ");
+  try {
+    for (const document of documents) {
+      console.log("embedding for doc", document.title);
+      const input = document.content.replace(/\n/g, " ");
 
-    const embeddingResponse = await openaiClient.createEmbedding({
-      model: "text-embedding-ada-002",
-      input,
-    });
+      const embeddingResponse = await openaiClient.createEmbedding({
+        model: "text-embedding-ada-002",
+        input,
+      });
 
-    const [{ embedding }] = embeddingResponse.data.data;
+      const [{ embedding }] = embeddingResponse.data.data;
 
-    // In production, we should handle possible errors
-    await supabaseClient.from("documents").insert({
-      title: document.title,
-      content: document.content,
-      docsurl: document.docsUrl,
-      embedding,
-    });
+      await supabaseClient.from("documents").insert({
+        title: document.title,
+        content: document.content,
+        docsurl: document.docsUrl,
+        embedding,
+      });
+      console.log("Document saved for ", document.title);
+    }
+  } catch (error: any) {
+    console.error("An error occurred while creating/saving embedding");
   }
 };
 

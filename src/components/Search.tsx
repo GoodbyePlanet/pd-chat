@@ -44,7 +44,7 @@ export default function SearchBox({ onSearch }: Props): ReactElement {
         <input
           type="search"
           id="default-search"
-          className="text-gray-900 border-gray-300 bg-gray-50 focus:ring-blue-100 block w-full rounded-lg border p-4 pl-10 text-sm focus:outline-none focus:ring"
+          className="text-gray-900 border-gray-300 bg-gray-50 focus:ring-blue-100 block w-full rounded-lg border p-4 pl-10 pr-10 text-sm focus:outline-none focus:ring"
           placeholder="Send a question"
           onChange={(e) => setQuestion(e.target.value)}
           required

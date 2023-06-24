@@ -35,14 +35,19 @@ export default function PDChat(): ReactElement {
 
   return (
     <div className="w-4/5 md:w-3/5 lg:w-3/5">
-      <h3 className="mb-5 text-center text-5xl font-bold text-pd">PD Chat</h3>
+      <h3 className="mb-5 mt-5 text-center text-5xl font-bold text-pd">
+        PD Chat
+      </h3>
       <p className="mb-5 text-center italic">
-        Please note that this is the MVP version, and there is a possibility of
-        receiving incorrect answers. We kindly request you to submit any such
-        instances so that we can improve them in future iterations. Presently,
-        you can inquire about the following topics: Profit Share, Knowledge
-        Sharing, Company Culture, Vacation and Days Off, Benefits, and Time
-        Tracking.
+        Please note that this is the{" "}
+        <span className="font-medium">MVP version</span>, and there is a
+        possibility of receiving incorrect answers. We kindly request you to
+        submit any such instances so that we can improve them in future
+        iterations. Presently, you can inquire about the following topics:{" "}
+        <span className="font-medium">
+          Profit Share, Knowledge Sharing, Company Culture, Vacation and Days
+          Off, Benefits, and Time Tracking.
+        </span>
       </p>
       <SearchBox onSearch={handleCreateQuestion} />
       {mutation.isLoading && <span className={styles.loader}></span>}

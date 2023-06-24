@@ -1,6 +1,8 @@
 import React, { ReactElement, useEffect, useState } from "react";
 
 import styles from "./Answer.module.css";
+import { Simulate } from "react-dom/test-utils";
+import keyDown = Simulate.keyDown;
 
 interface AnswerProps {
   text: string;
@@ -9,8 +11,9 @@ interface AnswerProps {
 
 export const Answer = ({ question, text }: AnswerProps): ReactElement => {
   const [words, setWords] = useState<Array<string>>([]);
-  const [isTextComplete, setIsTextComplete] = useState(false);
-  const [isWrongAnswerSubmitted, setIsWrongAnswerSubmitted] = useState(false);
+  const [isTextComplete, setIsTextComplete] = useState<boolean>(false);
+  const [isWrongAnswerSubmitted, setIsWrongAnswerSubmitted] =
+    useState<boolean>(false);
 
   useEffect(() => {
     setWords(text.split(" "));
@@ -44,7 +47,7 @@ export const Answer = ({ question, text }: AnswerProps): ReactElement => {
     <>
       {words.map((word, index) => {
         if (word.startsWith("https://")) {
-          return <Href key={index} index={index} text={text} />;
+          return <Href key={index} index={index} word={word} />;
         }
 
         return <Word key={index} index={index} word={word} />;
@@ -73,7 +76,7 @@ const WrongAnswer = ({
       <button
         type="submit"
         onClick={onSubmitWrongAnswer}
-        className="focus:ring-red-300 mt-2 block rounded-lg bg-red px-3 py-2 text-center text-xs font-medium text-white hover:bg-red focus:outline-none focus:ring-4"
+        className="focus:ring-red-300 mb-4 mt-2 block rounded-lg bg-red px-3 py-2 text-center text-xs font-medium text-white hover:bg-red focus:outline-none focus:ring-4"
       >
         Submit wrong answer
       </button>
@@ -92,18 +95,18 @@ const GratitudeText = (): ReactElement => (
 
 interface HrefProps {
   index: number;
-  text: string;
+  word: string;
 }
 
-const Href = ({ index, text }: HrefProps): ReactElement => (
+const Href = ({ index, word }: HrefProps): ReactElement => (
   <a
-    href={text}
+    href={word}
     className={styles.fadeIn}
     style={{ color: "#02609A", animationDelay: `${index * 0.05}s` }}
     target="_blank"
     rel="noopener noreferrer"
   >
-    {text}{" "}
+    {word}{" "}
   </a>
 );
 
