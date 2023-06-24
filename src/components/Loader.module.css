@@ -3,10 +3,7 @@
     height: 12px;
     border-radius: 50%;
     display: block;
-    margin:  auto;
-    position: absolute;
-    left: 50%;
-    top: 66%;
+    margin: 2rem auto;
     color: var(--pd);
     box-sizing: border-box;
     animation: animloader 1s linear infinite alternate;
