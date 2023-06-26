@@ -1,8 +1,6 @@
 import React, { ReactElement, useEffect, useState } from "react";
 
 import styles from "./Answer.module.css";
-import { Simulate } from "react-dom/test-utils";
-import keyDown = Simulate.keyDown;
 
 interface AnswerProps {
   text: string;
@@ -45,6 +43,7 @@ export const Answer = ({ question, text }: AnswerProps): ReactElement => {
 
   return (
     <>
+      <div className="mb-5 font-semibold">{question}</div>
       {words.map((word, index) => {
         if (word.startsWith("https://")) {
           return <Href key={index} index={index} word={word} />;

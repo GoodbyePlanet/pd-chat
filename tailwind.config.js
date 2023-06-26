@@ -10,13 +10,7 @@ module.exports = {
       transparent: "transparent",
       current: "currentColor",
       white: "#ffffff",
-      purple: "#3f3cbb",
       red: "#b90202",
-      metal: "#565584",
-      tahiti: "#3ab7bf",
-      silver: "#ecebff",
-      "bubble-gum": "#ff77e9",
-      bermuda: "#78dcca",
       pd: "#02609A",
     },
     extend: {

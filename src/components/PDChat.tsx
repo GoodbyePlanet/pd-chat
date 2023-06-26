@@ -1,4 +1,4 @@
-import { ReactElement } from "react";
+import { ReactElement, useRef, useState } from "react";
 import { useMutation } from "react-query";
 import SearchBox from "@/components/Search";
 import { Answer } from "@/components/Answer";
@@ -26,10 +26,15 @@ const TIMEOUT_ERROR = "504";
 
 export default function PDChat(): ReactElement {
   const mutation = useMutation(createQuestion);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const handleCreateQuestion = async (question: string): Promise<void> => {
     try {
       await mutation.mutateAsync({ question });
+
+      if (inputRef.current) {
+        inputRef.current.value = "";
+      }
     } catch (error) {
       console.error("Failed to create post:", error);
     }
@@ -55,7 +60,7 @@ export default function PDChat(): ReactElement {
           Off, Benefits, and Time Tracking.
         </span>
       </p>
-      <SearchBox onSearch={handleCreateQuestion} />
+      <SearchBox onSearch={handleCreateQuestion} inputRef={inputRef} />
       {mutation.isLoading && <span className={styles.loader}></span>}
       {mutation.isSuccess && (
         <div className="mt-5">

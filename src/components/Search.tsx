@@ -2,9 +2,10 @@ import React, { useState, ReactElement, FormEvent } from "react";
 
 interface Props {
   onSearch: (question: string) => {};
+  inputRef: React.RefObject<HTMLInputElement>;
 }
 
-export default function SearchBox({ onSearch }: Props): ReactElement {
+export default function SearchBox({ onSearch, inputRef }: Props): ReactElement {
   const [question, setQuestion] = useState("");
 
   const handleSearchSubmit = (event: FormEvent<HTMLFormElement>): void => {
@@ -47,6 +48,7 @@ export default function SearchBox({ onSearch }: Props): ReactElement {
           className="text-gray-900 border-gray-300 bg-gray-50 focus:ring-blue-100 block w-full rounded-lg border p-4 pl-10 pr-10 text-sm focus:outline-none focus:ring"
           placeholder="Send a question"
           onChange={(e) => setQuestion(e.target.value)}
+          ref={inputRef}
           required
         />
         <button
