@@ -16,11 +16,13 @@ const createQuestion = async (question: {
   });
 
   if (!response.ok) {
-    throw new Error("Failed to create post");
+    throw new Error(`Failed to create post: ${response.status}`);
   }
 
   return response.json();
 };
+
+const TIMEOUT_ERROR = "504";
 
 export default function PDChat(): ReactElement {
   const mutation = useMutation(createQuestion);
@@ -32,6 +34,10 @@ export default function PDChat(): ReactElement {
       console.error("Failed to create post:", error);
     }
   };
+
+  const isTimeoutError =
+    // @ts-ignore
+    mutation.isError && mutation.error?.message?.includes(TIMEOUT_ERROR);
 
   return (
     <div className="w-4/5 md:w-3/5 lg:w-3/5">
@@ -59,6 +65,16 @@ export default function PDChat(): ReactElement {
           />
         </div>
       )}
+      {isTimeoutError && (
+        <ErrorMessage message="Sorry for inconvenience, OpenAI is busy right now, please ask a question later!" />
+      )}
+      {mutation.isError && (
+        <ErrorMessage message="Sorry for inconvenience, we are experiencing issues on the server, please ask a question later!" />
+      )}
     </div>
   );
+}
+
+function ErrorMessage({ message }: { message: string }): ReactElement {
+  return <div className="mt-5 font-semibold text-red">{message}</div>;
 }

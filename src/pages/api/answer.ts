@@ -92,6 +92,8 @@ export default async function handler(
   res: NextApiResponse<Data | ErrorResponse>
 ) {
   try {
+    res.status(500).json({ message: "An errorr occurred!" });
+    return;
     const input = extractAndSanitizeQuestion(req);
     const moderationResponse = await openaiClient.createModeration({ input });
 
