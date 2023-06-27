@@ -1,8 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import {
-  ChatCompletionRequestMessage,
-  CreateChatCompletionRequest,
-} from "openai/api";
+import { ChatCompletionRequestMessage, CreateChatCompletionRequest } from "openai/api";
 import dedent from "ts-dedent";
 import { openaiClient } from "@/utils/openaiClient";
 import { supabaseClient } from "@/utils/supabaseClient";
@@ -102,15 +99,11 @@ export default async function handler(
     const queryEmbedding = await getQueryEmbedding(input);
 
     if (queryEmbedding.status !== 200) {
-      res
-        .status(500)
-        .json({ message: "Failed to create an embedding for question!" });
+      res.status(500).json({ message: "Failed to create an embedding for question!" });
     }
 
     const [{ embedding }] = queryEmbedding.data.data;
-    const { data: chunks, error: matchError } = await getContentFromDB(
-      embedding
-    );
+    const { data: chunks, error: matchError } = await getContentFromDB(embedding);
 
     if (matchError) {
       console.error("Match error", matchError);

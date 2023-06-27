@@ -10,8 +10,7 @@ interface AnswerProps {
 export const Answer = ({ question, text }: AnswerProps): ReactElement => {
   const [words, setWords] = useState<Array<string>>([]);
   const [isTextComplete, setIsTextComplete] = useState<boolean>(false);
-  const [isWrongAnswerSubmitted, setIsWrongAnswerSubmitted] =
-    useState<boolean>(false);
+  const [isWrongAnswerSubmitted, setIsWrongAnswerSubmitted] = useState<boolean>(false);
 
   useEffect(() => {
     setWords(text.split(" "));
@@ -51,9 +50,7 @@ export const Answer = ({ question, text }: AnswerProps): ReactElement => {
 
         return <Word key={index} index={index} word={word} />;
       })}
-      {isTextComplete && (
-        <WrongAnswer onSubmitWrongAnswer={handleOnSubmitWrongAnswer} />
-      )}
+      {isTextComplete && <WrongAnswer onSubmitWrongAnswer={handleOnSubmitWrongAnswer} />}
       {isWrongAnswerSubmitted && <GratitudeText />}
     </>
   );
@@ -63,14 +60,12 @@ interface WrongAnswerProps {
   onSubmitWrongAnswer: () => void;
 }
 
-const WrongAnswer = ({
-  onSubmitWrongAnswer,
-}: WrongAnswerProps): ReactElement => {
+const WrongAnswer = ({ onSubmitWrongAnswer }: WrongAnswerProps): ReactElement => {
   return (
     <div className="mt-4">
       <span className="italic">
-        If this answer is incorrect please submit wrong answer so that we can
-        improve this chat in the next iterations.{" "}
+        If this answer is incorrect please submit wrong answer so that we can improve this chat in
+        the next iterations.{" "}
       </span>
       <button
         type="submit"
@@ -86,8 +81,7 @@ const WrongAnswer = ({
 const GratitudeText = (): ReactElement => (
   <div className="mt-4">
     <span className="font-semibold italic">
-      Thank you for submitting wrong answer. We will try to improve our response
-      in next iterations!
+      Thank you for submitting wrong answer. We will try to improve our response in next iterations!
     </span>
   </div>
 );
@@ -116,11 +110,7 @@ interface WordProps {
 
 const Word = ({ index, word }: WordProps): ReactElement => {
   return (
-    <span
-      key={index}
-      className={styles.fadeIn}
-      style={{ animationDelay: `${index * 0.05}s` }}
-    >
+    <span key={index} className={styles.fadeIn} style={{ animationDelay: `${index * 0.05}s` }}>
       {word}{" "}
     </span>
   );
