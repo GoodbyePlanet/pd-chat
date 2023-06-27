@@ -22,7 +22,7 @@ const createQuestion = async (question: {
   return response.json();
 };
 
-const TIMEOUT_ERROR = "504";
+const TIMEOUT_ERROR_CODE = "504";
 
 export default function PDChat(): ReactElement {
   const mutation = useMutation(createQuestion);
@@ -42,7 +42,7 @@ export default function PDChat(): ReactElement {
 
   const isTimeoutError =
     // @ts-ignore
-    mutation.isError && mutation.error?.message?.includes(TIMEOUT_ERROR);
+    mutation.isError && mutation.error?.message?.includes(TIMEOUT_ERROR_CODE);
 
   return (
     <div className="w-4/5 md:w-3/5 lg:w-3/5">
@@ -73,7 +73,7 @@ export default function PDChat(): ReactElement {
       {isTimeoutError && (
         <ErrorMessage message="Sorry for inconvenience, OpenAI is busy right now, please ask a question later!" />
       )}
-      {mutation.isError && (
+      {mutation.isError && !isTimeoutError && (
         <ErrorMessage message="Sorry for inconvenience, we are experiencing issues on the server, please ask a question later!" />
       )}
     </div>
