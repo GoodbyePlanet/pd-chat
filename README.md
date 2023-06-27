@@ -1,6 +1,8 @@
 ## Getting Started
 
 AI powered chat.
+[PD Chat on Vercel](https://pd-chat.vercel.app/)
+[PD Chat on Fly.io](https://pd-chat.fly.dev/)
 
 ### Setup
 
