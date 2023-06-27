@@ -2,12 +2,12 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { supabaseClient } from "@/utils/supabaseClient";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { question, answer } = req.body;
+  const { question, answer, reason } = req.body;
 
   try {
     const { error } = await supabaseClient
       .from("wronganswers")
-      .insert({ question, wronganswer: answer });
+      .insert({ question, wronganswer: answer, reason });
 
     if (error) {
       console.error("Error saving entry:", error);

@@ -27,7 +27,7 @@ export const Answer = ({ question, text }: AnswerProps): ReactElement => {
     }
   }, [words]);
 
-  const handleOnSubmitWrongAnswer = async (): Promise<void> => {
+  const handleOnSubmitWrongAnswer = async (reason?: string): Promise<void> => {
     setIsTextComplete(false);
     setIsWrongAnswerSubmitted(true);
 
@@ -36,7 +36,7 @@ export const Answer = ({ question, text }: AnswerProps): ReactElement => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ question, answer: text }),
+      body: JSON.stringify({ question, answer: text, ...(reason && { reason }) }),
     });
   };
 
@@ -57,19 +57,34 @@ export const Answer = ({ question, text }: AnswerProps): ReactElement => {
 };
 
 interface WrongAnswerProps {
-  onSubmitWrongAnswer: () => void;
+  onSubmitWrongAnswer: (wrongAnswer?: string) => void;
 }
 
 const WrongAnswer = ({ onSubmitWrongAnswer }: WrongAnswerProps): ReactElement => {
+  const [reason, setReason] = useState("");
+
   return (
-    <div className="mt-4">
+    <div className="mt-8">
       <span className="italic">
         If this answer is incorrect please submit wrong answer so that we can improve this chat in
         the next iterations.{" "}
       </span>
+      <div>
+        <label htmlFor="small-input" className="text-gray-900 mt-2 block text-sm font-medium">
+          This input is optional but it would help us if you would write reason why you think it is
+          incorrect answer.
+        </label>
+        <input
+          type="text"
+          id="small-input"
+          className="text-gray-900 border-gray-300 bg-gray-50 focus:ring-blue-100 focus:border-blue-500 mb-5 mt-2 block w-full rounded-lg border p-2 focus:outline-none focus:ring sm:text-xs"
+          placeholder="Reason"
+          onChange={(e) => setReason(e.target.value)}
+        />
+      </div>
       <button
         type="submit"
-        onClick={onSubmitWrongAnswer}
+        onClick={() => onSubmitWrongAnswer(reason)}
         className="focus:ring-red-300 mb-4 mt-2 block rounded-lg bg-red px-3 py-2 text-center text-xs font-medium text-white hover:bg-red focus:outline-none focus:ring-4"
       >
         Submit wrong answer
