@@ -1,10 +1,12 @@
 import { openaiClient } from "@/utils/openaiClient";
 import { supabaseClient } from "@/utils/supabaseClient";
 
-import profitShare from "@/documents/profit-share.json";
-import cultureAndBenefits from "@/documents/culture-benefits.json";
+import benefits from "@/documents/benefits.json";
+import culture from "@/documents/culture.json";
+import improvementTime from "@/documents/improvement-time.json";
 import knowledgeSharing from "@/documents/knowledge-sharing.json";
 import logs from "@/documents/logs.json";
+import profitShare from "@/documents/profit-share.json";
 import vacationDaysOff from "@/documents/vacation-days-off.json";
 
 type Document = {
@@ -43,10 +45,12 @@ const generateEmbeddings = async (documents: Document[]): Promise<void> => {
 
 (async () => {
   const documents: Document[] = [
-    profitShare,
-    cultureAndBenefits,
+    benefits,
+    culture,
+    improvementTime,
     knowledgeSharing,
     logs,
+    profitShare,
     vacationDaysOff,
   ];
   await generateEmbeddings(documents);
