@@ -7,9 +7,23 @@ interface AnswerProps {
   question: string;
 }
 
+interface HrefProps {
+  index: number;
+  word: string;
+}
+
+interface WordProps {
+  index: number;
+  word: string;
+}
+
+interface WrongAnswerProps {
+  onSubmitWrongAnswer: (wrongAnswer?: string) => void;
+}
+
 export const Answer = ({ question, text }: AnswerProps): ReactElement => {
   const [words, setWords] = useState<Array<string>>([]);
-  const [isTextComplete, setIsTextComplete] = useState<boolean>(false);
+  const [isTextAnimationComplete, setIsTextAnimationComplete] = useState<boolean>(false);
   const [isWrongAnswerSubmitted, setIsWrongAnswerSubmitted] = useState<boolean>(false);
 
   useEffect(() => {
@@ -22,13 +36,13 @@ export const Answer = ({ question, text }: AnswerProps): ReactElement => {
       const lastWordDelay = lastWordIndex * 0.05 * 1000; // Delay in milliseconds
 
       setTimeout(() => {
-        setIsTextComplete(true);
+        setIsTextAnimationComplete(true);
       }, lastWordDelay + 400);
     }
   }, [words]);
 
   const handleOnSubmitWrongAnswer = async (reason?: string): Promise<void> => {
-    setIsTextComplete(false);
+    setIsTextAnimationComplete(false);
     setIsWrongAnswerSubmitted(true);
 
     await fetch("/api/wrong-answer", {
@@ -50,15 +64,11 @@ export const Answer = ({ question, text }: AnswerProps): ReactElement => {
 
         return <Word key={index} index={index} word={word} />;
       })}
-      {isTextComplete && <WrongAnswer onSubmitWrongAnswer={handleOnSubmitWrongAnswer} />}
+      {isTextAnimationComplete && <WrongAnswer onSubmitWrongAnswer={handleOnSubmitWrongAnswer} />}
       {isWrongAnswerSubmitted && <GratitudeText />}
     </>
   );
 };
-
-interface WrongAnswerProps {
-  onSubmitWrongAnswer: (wrongAnswer?: string) => void;
-}
 
 const WrongAnswer = ({ onSubmitWrongAnswer }: WrongAnswerProps): ReactElement => {
   const [reason, setReason] = useState("");
@@ -101,11 +111,6 @@ const GratitudeText = (): ReactElement => (
   </div>
 );
 
-interface HrefProps {
-  index: number;
-  word: string;
-}
-
 const Href = ({ index, word }: HrefProps): ReactElement => (
   <a
     href={word}
@@ -118,15 +123,8 @@ const Href = ({ index, word }: HrefProps): ReactElement => (
   </a>
 );
 
-interface WordProps {
-  index: number;
-  word: string;
-}
-
-const Word = ({ index, word }: WordProps): ReactElement => {
-  return (
-    <span key={index} className={styles.fadeIn} style={{ animationDelay: `${index * 0.05}s` }}>
-      {word}{" "}
-    </span>
-  );
-};
+const Word = ({ index, word }: WordProps): ReactElement => (
+  <span key={index} className={styles.fadeIn} style={{ animationDelay: `${index * 0.05}s` }}>
+    {word}{" "}
+  </span>
+);
