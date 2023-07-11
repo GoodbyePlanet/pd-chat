@@ -34,9 +34,20 @@ export default function PDChat(): ReactElement {
 
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const saveQuestion = async (question: string): Promise<void> => {
+    await fetch("/api/save-question", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ question }),
+    });
+  };
+
   const handleCreateQuestion = async (question: string): Promise<void> => {
     try {
       await mutation.mutateAsync({ question });
+      await saveQuestion(question);
 
       if (inputRef.current) {
         inputRef.current.value = "";
