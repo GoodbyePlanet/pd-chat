@@ -6,6 +6,7 @@ const environmentVariables = z.object({
   SUPABASE_SERVICE_ROLE_KEY: z.string(),
   NEXT_PUBLIC_GOOGLE_CLIENT_ID: z.string(),
   NEXT_PUBLIC_GOOGLE_CLIENT_SECRET: z.string(),
+  NEXT_AUTH_SECRET: z.string(),
 });
 
 declare global {
