@@ -4,6 +4,8 @@ const environmentVariables = z.object({
   OPENAI_API_KEY: z.string(),
   NEXT_PUBLIC_SUPABASE_URL: z.string(),
   SUPABASE_SERVICE_ROLE_KEY: z.string(),
+  GOOGLE_CLIENT_ID: z.string(),
+  GOOGLE_CLIENT_SECRET: z.string(),
 });
 
 declare global {
