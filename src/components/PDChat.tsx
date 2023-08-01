@@ -1,6 +1,5 @@
 import { ReactElement, useRef } from "react";
 import { useMutation } from "react-query";
-import { signOut } from "next-auth/react";
 import SearchBox from "@/components/Search";
 import { Answer } from "@/components/Answer";
 
