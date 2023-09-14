@@ -1,7 +1,6 @@
 {
     "name": "pd-chat",
     "version": "1.0.0",
-    "homepage": "https://pd-chat.vercel.app",
     "private": true,
     "scripts": {
         "format": "prettier --write .",
