@@ -15,7 +15,7 @@ type Document = {
 const generateEmbeddings = async (documents: Document[]): Promise<void> => {
   console.log("CREATING EMBEDDINGS FOR PG VECTOR DATABASE......");
 
-  // check pgvector connection
+  // check pgvector connection - DONE
   // connect to ollama client
   // go through documents and embed content using ollama
   // store embedded vectors to pgvector DB
