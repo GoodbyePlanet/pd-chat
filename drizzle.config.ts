@@ -5,7 +5,7 @@ loadEnvConfig("");
 
 export default defineConfig({
   dialect: "postgresql",
-  schema: "./src/drizzle-schema.ts",
+  schema: "./drizzle-schema.ts",
   out: "./drizzle",
   dbCredentials: {
     host: process.env.POSTGRES_HOST,

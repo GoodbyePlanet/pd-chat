@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS "documents" (
 	"title" text NOT NULL,
 	"content" text NOT NULL,
 	"docsurl" text NOT NULL,
-	"embedding" vector(1536)
+	"embedding" vector(768)
 );
 --> statement-breakpoint
-CREATE INDEX IF NOT EXISTS "embeddingIndex" ON "documents" USING hnsw ("embedding" vector_cosine_ops);
+CREATE INDEX IF NOT EXISTS "cosine_index" ON "documents" USING hnsw ("embedding" vector_cosine_ops);

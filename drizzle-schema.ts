@@ -7,9 +7,9 @@ export const documents = pgTable(
     title: text("title").notNull(),
     content: text("content").notNull(),
     docsurl: text("docsurl").notNull(),
-    embedding: vector("embedding", { dimensions: 1536 }),
+    embedding: vector("embedding", { dimensions: 768 }),
   },
   (table) => ({
-    embeddingIndex: index("embeddingIndex").using("hnsw", table.embedding.op("vector_cosine_ops")),
+    cosine: index("cosine_index").using("hnsw", table.embedding.op("vector_cosine_ops")),
   })
 );

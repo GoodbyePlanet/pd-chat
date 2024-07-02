@@ -1,6 +1,6 @@
 {
-  "id": "11c8bcc1-3bfb-4d56-9321-c399cafd1995",
-  "prevId": "6366729b-88b9-427e-bc74-8a8c92f3660c",
+  "id": "fdd1a3c5-39e8-4966-a9c5-eac568d8c6e1",
+  "prevId": "fc560312-12d5-48fb-a84d-c8d04c82f8da",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -34,14 +34,14 @@
         },
         "embedding": {
           "name": "embedding",
-          "type": "vector(1536)",
+          "type": "vector(768)",
           "primaryKey": false,
           "notNull": false
         }
       },
       "indexes": {
-        "embeddingIndex": {
-          "name": "embeddingIndex",
+        "cosine_index": {
+          "name": "cosine_index",
           "columns": [
             {
               "expression": "embedding",
