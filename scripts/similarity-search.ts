@@ -1,10 +1,10 @@
 import { openaiClient } from "@/utils/openaiClient";
 import { supabaseClient } from "@/utils/supabaseClient";
-import { OpenAIModel } from "@/types";
+import { AIModels } from "@/types";
 
 const executeQuery = async (): Promise<void> => {
   const embeddingResponse = await openaiClient.createEmbedding({
-    model: OpenAIModel.EMBEDDING,
+    model: AIModels.OPEN_AI_EMBEDDING,
     input: "In which cities Productdock has offices?",
   });
 

@@ -1,7 +1,14 @@
 import ollama from "ollama";
-import benefits from "@/documents/benefits.json";
 import { drizzleClient } from "@/utils/pg-drizzle-client";
 import { documents as documentsTable } from "../drizzle-schema";
+import benefits from "@/documents/benefits.json";
+import culture from "@/documents/culture.json";
+import improvementTime from "@/documents/improvement-time.json";
+import knowledgeSharing from "@/documents/knowledge-sharing.json";
+import logs from "@/documents/logs.json";
+import profitShare from "@/documents/profit-share.json";
+import vacationDaysOff from "@/documents/vacation-days-off.json";
+import { AIModels } from "@/types";
 
 type Document = {
   title: string;
@@ -14,16 +21,14 @@ const generateEmbeddings = async (documents: Document[]): Promise<void> => {
 
   try {
     for (const document of documents) {
-      console.log("embedding for doc ", document.title);
       const input = document.content.replace(/\n/g, " ");
 
       const response = await ollama.embeddings({
-        model: "nomic-embed-text",
+        model: AIModels.OLLAMA_EMBEDDING,
         prompt: input,
       });
-
       const embedding = response.embedding;
-      console.log("drizzle client", drizzleClient);
+
       await drizzleClient
         .insert(documentsTable)
         .values({
@@ -33,23 +38,22 @@ const generateEmbeddings = async (documents: Document[]): Promise<void> => {
           embedding,
         })
         .execute();
-      console.log("DONE");
+      console.log("DONE for: ", document.title);
     }
   } catch (error: any) {
-    console.error("An error occurred while creating/saving embedding");
+    console.error("An error occurred while creating/saving embeddings");
   }
-  // store embedded vectors to pgvector DB
 };
 
 (async () => {
   const documents: Document[] = [
     benefits,
-    // culture,
-    // improvementTime,
-    // knowledgeSharing,
-    // logs,
-    // profitShare,
-    // vacationDaysOff,
+    culture,
+    improvementTime,
+    knowledgeSharing,
+    logs,
+    profitShare,
+    vacationDaysOff,
   ];
   await generateEmbeddings(documents);
 })();

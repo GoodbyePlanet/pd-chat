@@ -1,4 +1,5 @@
-export enum OpenAIModel {
+export enum AIModels {
   DAVINCI_TURBO = "gpt-3.5-turbo",
-  EMBEDDING = "text-embedding-ada-002",
+  OPEN_AI_EMBEDDING = "text-embedding-ada-002",
+  OLLAMA_EMBEDDING = "nomic-embed-text",
 }

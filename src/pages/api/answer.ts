@@ -3,7 +3,7 @@ import { ChatCompletionRequestMessage, CreateChatCompletionRequest } from "opena
 import dedent from "ts-dedent";
 import { openaiClient } from "@/utils/openaiClient";
 import { supabaseClient } from "@/utils/supabaseClient";
-import { OpenAIModel } from "@/types";
+import { AIModels } from "@/types";
 
 type Data = {
   answer: string;
@@ -21,7 +21,7 @@ type Chunk = {
 
 async function getQueryEmbedding(input: string) {
   return await openaiClient.createEmbedding({
-    model: OpenAIModel.EMBEDDING,
+    model: AIModels.OPEN_AI_EMBEDDING,
     input,
   });
 }
@@ -77,7 +77,7 @@ function createChatCompletionRequest(
   const docsUrl = contentChunk.docsurl;
 
   return {
-    model: OpenAIModel.DAVINCI_TURBO,
+    model: AIModels.DAVINCI_TURBO,
     messages: createChatCompletionMessages(contentText, docsUrl, input),
     max_tokens: 512,
     temperature: 0,
