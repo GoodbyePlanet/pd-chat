@@ -3,3 +3,9 @@ export enum AIModels {
   OPEN_AI_EMBEDDING = "text-embedding-ada-002",
   OLLAMA_EMBEDDING = "nomic-embed-text",
 }
+
+export type Document = {
+  title: string;
+  content: string;
+  docsUrl: string;
+};

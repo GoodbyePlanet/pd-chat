@@ -1,5 +1,6 @@
 import { openaiClient } from "@/utils/openaiClient";
 import { supabaseClient } from "@/utils/supabaseClient";
+import { Document } from "@/types";
 
 import benefits from "@/documents/benefits.json";
 import culture from "@/documents/culture.json";
@@ -8,12 +9,6 @@ import knowledgeSharing from "@/documents/knowledge-sharing.json";
 import logs from "@/documents/logs.json";
 import profitShare from "@/documents/profit-share.json";
 import vacationDaysOff from "@/documents/vacation-days-off.json";
-
-type Document = {
-  title: string;
-  content: string;
-  docsUrl: string;
-};
 
 const generateEmbeddings = async (documents: Document[]): Promise<void> => {
   console.log("creating embeddings started...");

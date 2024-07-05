@@ -9,12 +9,7 @@ import logs from "@/documents/logs.json";
 import profitShare from "@/documents/profit-share.json";
 import vacationDaysOff from "@/documents/vacation-days-off.json";
 import { AIModels } from "@/types";
-
-type Document = {
-  title: string;
-  content: string;
-  docsUrl: string;
-};
+import { Document } from "@/types";
 
 const generateEmbeddings = async (documents: Document[]): Promise<void> => {
   console.log("CREATING EMBEDDINGS FOR PG VECTOR DATABASE......");
