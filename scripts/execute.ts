@@ -1,5 +1,6 @@
-import { Document } from "@/types";
+import { Databases, Document, EmbeddingProviders } from "@/types";
 import { Embedding } from "./embedding";
+import { DatabaseClient } from "./database-client";
 
 import benefits from "@/documents/benefits.json";
 import culture from "@/documents/culture.json";
@@ -12,14 +13,16 @@ import vacationDaysOff from "@/documents/vacation-days-off.json";
 (async () => {
   const documents: Document[] = [
     benefits,
-    // culture,
-    // improvementTime,
-    // knowledgeSharing,
-    // logs,
-    // profitShare,
-    // vacationDaysOff,
+    culture,
+    improvementTime,
+    knowledgeSharing,
+    logs,
+    profitShare,
+    vacationDaysOff,
   ];
 
-  const embedding = new Embedding();
-  await embedding.storeEmbeddingsToDB(documents);
+  const databaseClient = new DatabaseClient(Databases.PG_VECTOR);
+  const embedding = new Embedding(EmbeddingProviders.OLLAMA);
+
+  await databaseClient.storeEmbeddingsInDB(documents, embedding);
 })();

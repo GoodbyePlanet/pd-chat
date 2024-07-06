@@ -4,6 +4,16 @@ export enum AIModels {
   OLLAMA_EMBEDDING = "nomic-embed-text",
 }
 
+export enum Databases {
+  PG_VECTOR = "pgVector",
+  SUPABASE = "supabase",
+}
+
+export enum EmbeddingProviders {
+  OPEN_AI = "OPEN_AI",
+  OLLAMA = "OLLAMA",
+}
+
 export type Document = {
   title: string;
   content: string;
