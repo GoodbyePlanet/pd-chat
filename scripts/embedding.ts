@@ -12,7 +12,14 @@ export class Embedding {
   public async generate(input: string): Promise<number[]> {
     const embedFunc = EMBED_FUNC[this.embeddingProvider as keyof EmbedFunc];
 
-    return embedFunc(input);
+    try {
+      return embedFunc(input);
+    } catch (error: any) {
+      console.error(
+        `An error occurred while generating embedding for with ${this.embeddingProvider} provider`
+      );
+      throw error;
+    }
   }
 }
 
