@@ -1,9 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import ChatCompletionRequestMessage from "openai";
 import dedent from "ts-dedent";
 import { openaiClient } from "@/utils/openaiClient";
 import { supabaseClient } from "@/utils/supabaseClient";
 import { AIModels } from "@/types";
+import { EmbeddingModelV1Embedding } from "@ai-sdk/provider";
 
 type Data = {
   answer: string;
@@ -22,8 +22,7 @@ type Chunk = {
 async function getQueryEmbedding(input: string) {
   const embedding = openaiClient.embedding(AIModels.OPEN_AI_EMBEDDING);
 
-  // TODO: fix this
-  return embedding.doEmbed({ values: input });
+  return embedding.doEmbed({ values: [input] });
 }
 
 async function getContentFromDB(
@@ -54,11 +53,7 @@ function createSystemContext(contentText: string, docsUrl: string): string {
     `;
 }
 
-function createChatCompletionMessages(
-  contentText: string,
-  docsUrl: string,
-  input: string
-): Array<ChatCompletionRequestMessage> {
+function createChatCompletionMessages(contentText: string, docsUrl: string, input: string) {
   return [
     { role: "system", content: createSystemContext(contentText, docsUrl) },
     {
@@ -68,10 +63,7 @@ function createChatCompletionMessages(
   ];
 }
 
-function createChatCompletionRequest(
-  chunks: Array<Chunk>,
-  input: string
-): CreateChatCompletionRequest {
+function createChatCompletionRequest(chunks: Array<Chunk>, input: string) {
   const contentChunk = chunks[0];
   const contentText = `${contentChunk.content.trim()}\n`;
   const docsUrl = contentChunk.docsurl;
@@ -84,25 +76,22 @@ function createChatCompletionRequest(
   };
 }
 
+// TODO: this whole thing has to be tested, which this commit only typescript compilation errors are fixed
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data | ErrorResponse>
 ) {
   try {
     const input = extractAndSanitizeQuestion(req);
-    const moderationResponse = await openaiClient.createModeration({ input });
-
-    if (moderationResponse.data?.results[0]?.flagged) {
-      res.status(400).json({ message: "Flagged content!" });
-    }
-
     const queryEmbedding = await getQueryEmbedding(input);
 
-    if (queryEmbedding.status !== 200) {
+    if (queryEmbedding === null || queryEmbedding === undefined) {
       res.status(500).json({ message: "Failed to create an embedding for question!" });
     }
 
-    const [{ embedding }] = queryEmbedding.data.data;
+    const embedding = queryEmbedding.embeddings.flatMap(
+      (embedding: EmbeddingModelV1Embedding) => embedding
+    );
     const { data: chunks, error: matchError } = await getContentFromDB(embedding);
 
     if (matchError) {
@@ -110,15 +99,25 @@ export default async function handler(
       res.status(500).json({ message: "Failed to match any document!" });
     }
 
-    const completionResponse = await openaiClient.createChatCompletion(
-      createChatCompletionRequest(chunks, input)
-    );
+    const chat = openaiClient.chat(AIModels.DAVINCI_TURBO);
+    const contentChunk = chunks[0];
+    const contentText = `${contentChunk.content.trim()}\n`;
+    const docsUrl = contentChunk.docsurl;
+    const context = createSystemContext(contentText, docsUrl);
+    const chatResponse = await chat.doGenerate({
+      inputFormat: "messages",
+      mode: { type: "regular" },
+      prompt: [
+        { role: "system", content: context },
+        { role: "user", content: [{ type: "text", text: input }] },
+      ],
+    });
 
-    if (completionResponse.status !== 200) {
+    if (chatResponse.finishReason === "error") {
       res.status(500).json({ message: "Failed to create chat completion!" });
     }
 
-    const answer = completionResponse.data?.choices[0]?.message?.content || "";
+    const answer = chatResponse.text || "";
     res.status(200).json({ answer });
   } catch (error: any) {
     console.error("An error occurred", error);
