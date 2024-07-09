@@ -21,16 +21,14 @@ export class DatabaseClient {
         console.log("Generating embedding for: ", doc.title);
 
         const input = doc.content.replace(/\n/g, " ");
-
         const embeddings = await embedding.generate(input);
-
         const storeEmbeddingsInDB = this.getDBClientStoreFunc();
-        storeEmbeddingsInDB(doc, embeddings);
 
+        storeEmbeddingsInDB(doc, embeddings);
         console.log("Embedding stored for: ", doc.title);
       }
     } catch (error: any) {
-      console.error("An error occurred while creating/saving embeddings");
+      console.error("An error occurred while creating/saving embeddings!");
     }
   }
 }

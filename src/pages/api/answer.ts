@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { ChatCompletionRequestMessage, CreateChatCompletionRequest } from "openai/api";
+import ChatCompletionRequestMessage from "openai";
 import dedent from "ts-dedent";
 import { openaiClient } from "@/utils/openaiClient";
 import { supabaseClient } from "@/utils/supabaseClient";
@@ -20,10 +20,10 @@ type Chunk = {
 };
 
 async function getQueryEmbedding(input: string) {
-  return await openaiClient.createEmbedding({
-    model: AIModels.OPEN_AI_EMBEDDING,
-    input,
-  });
+  const embedding = openaiClient.embedding(AIModels.OPEN_AI_EMBEDDING);
+
+  // TODO: fix this
+  return embedding.doEmbed({ values: input });
 }
 
 async function getContentFromDB(

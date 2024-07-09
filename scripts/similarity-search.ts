@@ -1,19 +1,23 @@
 import ollama from "ollama";
+import { generateText } from "ai";
 import { cosineDistance, desc, gt, sql } from "drizzle-orm";
+import dedent from "ts-dedent";
 import { AIModels } from "@/types";
 import { client, drizzleClient } from "@/utils/pg-drizzle-client";
 import { documents } from "../drizzle-schema";
 import { openaiClient } from "@/utils/openaiClient";
 import { supabaseClient } from "@/utils/supabaseClient";
-import dedent from "ts-dedent";
+import { anthropic } from "@/utils/anthropicClient";
 
 const similaritySearchWithOpenAI = async (): Promise<void> => {
-  const embeddingResponse = await openaiClient.createEmbedding({
-    model: AIModels.OPEN_AI_EMBEDDING,
-    input: "In which cities Productdock has offices?",
+  const openAIEmbedding = openaiClient.embedding(AIModels.OPEN_AI_EMBEDDING, {
+    dimensions: 1536,
+    user: "test-pd-chat-user",
   });
-
-  const [{ embedding }] = embeddingResponse.data.data;
+  const embeddingResponse = await openAIEmbedding.doEmbed({
+    values: ["In which cities ProductDock has offices?"],
+  });
+  const embedding = embeddingResponse.embeddings;
   console.log("QUERY EMBEDDING", embedding);
 
   const { data: chunks, error } = await supabaseClient.rpc("match_documents", {
@@ -109,6 +113,18 @@ const chatWithOllama3 = async (userInput: string): Promise<void> => {
   }
 };
 
+const chatWithAnthropic = async (userInput: string): Promise<void> => {
+  const chat = anthropic.chat(AIModels.CLAUDE_3_HAIKU);
+
+  const response = await generateText({
+    model: chat,
+    prompt: userInput,
+  });
+
+  console.log("RESPONSE", response.text);
+};
+
 (async () => {
-  await chatWithOllama3("What is profit share?");
+  // await chatWithOllama3("What is profit share?");
+  await chatWithAnthropic("Write a vegetarian lasagna recipe for 4 people.");
 })();

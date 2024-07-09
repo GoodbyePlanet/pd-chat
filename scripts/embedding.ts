@@ -16,7 +16,7 @@ export class Embedding {
       return embedFunc(input);
     } catch (error: any) {
       console.error(
-        `An error occurred while generating embedding for with ${this.embeddingProvider} provider`
+        `An error occurred while generating embedding for with ${this.embeddingProvider} provider!`
       );
       throw error;
     }
