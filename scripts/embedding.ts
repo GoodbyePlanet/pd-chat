@@ -1,6 +1,7 @@
 import ollama from "ollama";
 import { openaiClient } from "@/utils/openaiClient";
 import { AIModels, EmbeddingProviders } from "@/types";
+import { EmbeddingModelV1Embedding } from "@ai-sdk/provider";
 
 export class Embedding {
   embeddingProvider: string;
@@ -16,7 +17,7 @@ export class Embedding {
       return embedFunc(input);
     } catch (error: any) {
       console.error(
-        `An error occurred while generating embedding for with ${this.embeddingProvider} provider`
+        `An error occurred while generating embedding for with ${this.embeddingProvider} provider!`
       );
       throw error;
     }
@@ -24,13 +25,14 @@ export class Embedding {
 }
 
 const embedWithAda002 = async (input: string): Promise<number[]> => {
-  const embeddingResponse = await openaiClient.createEmbedding({
-    model: EMBEDDING_PROVIDERS.OPEN_AI,
-    input,
+  const openAIEmbedding = openaiClient.embedding(AIModels.OPEN_AI_EMBEDDING, {
+    dimensions: 1536,
+    user: "test-pd-chat-user",
   });
+  const embeddingResponse = await openAIEmbedding.doEmbed({ values: [input] });
 
-  const [{ embedding }] = embeddingResponse.data.data;
-  return embedding;
+  // TODO: this has to be tested since...
+  return embeddingResponse.embeddings.flatMap((embedding: EmbeddingModelV1Embedding) => embedding);
 };
 
 const embedWithNomic = async (input: string): Promise<number[]> => {

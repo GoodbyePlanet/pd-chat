@@ -1,8 +1,9 @@
 import { loadEnvConfig } from "@next/env";
-import { Configuration, OpenAIApi } from "openai";
+import { createOpenAI } from "@ai-sdk/openai";
 
 loadEnvConfig("");
 
-const openaiConfig = new Configuration({ apiKey: process.env.OPENAI_API_KEY });
-
-export const openaiClient = new OpenAIApi(openaiConfig);
+export const openaiClient = createOpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+  compatibility: "strict",
+});

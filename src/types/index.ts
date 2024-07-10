@@ -3,6 +3,7 @@ export enum AIModels {
   OPEN_AI_EMBEDDING = "text-embedding-ada-002",
   OLLAMA_EMBEDDING = "nomic-embed-text",
   LLAMA_3 = "llama3",
+  CLAUDE_3_HAIKU = "claude-3-haiku-20240307",
 }
 
 export enum Databases {
