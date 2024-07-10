@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import dedent from "ts-dedent";
 import { openaiClient } from "@/utils/openaiClient";
 import { supabaseClient } from "@/utils/supabaseClient";
-import { AIModels } from "@/types";
+import { EmbeddingModels, Models } from "@/types";
 import { EmbeddingModelV1Embedding } from "@ai-sdk/provider";
 
 type Data = {
@@ -20,7 +20,7 @@ type Chunk = {
 };
 
 async function getQueryEmbedding(input: string) {
-  const embedding = openaiClient.embedding(AIModels.OPEN_AI_EMBEDDING);
+  const embedding = openaiClient.embedding(EmbeddingModels.OPEN_AI_EMBEDDING);
 
   return embedding.doEmbed({ values: [input] });
 }
@@ -69,7 +69,7 @@ function createChatCompletionRequest(chunks: Array<Chunk>, input: string) {
   const docsUrl = contentChunk.docsurl;
 
   return {
-    model: AIModels.DAVINCI_TURBO,
+    model: Models.DAVINCI_TURBO,
     messages: createChatCompletionMessages(contentText, docsUrl, input),
     max_tokens: 512,
     temperature: 0,
@@ -99,7 +99,7 @@ export default async function handler(
       res.status(500).json({ message: "Failed to match any document!" });
     }
 
-    const chat = openaiClient.chat(AIModels.DAVINCI_TURBO);
+    const chat = openaiClient.chat(Models.DAVINCI_TURBO);
     const contentChunk = chunks[0];
     const contentText = `${contentChunk.content.trim()}\n`;
     const docsUrl = contentChunk.docsurl;

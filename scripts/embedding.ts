@@ -1,6 +1,6 @@
 import ollama from "ollama";
 import { openaiClient } from "@/utils/openaiClient";
-import { AIModels, EmbeddingProviders } from "@/types";
+import { Models, EmbeddingProviders, EmbeddingModels } from "@/types";
 import { EmbeddingModelV1Embedding } from "@ai-sdk/provider";
 
 export class Embedding {
@@ -25,7 +25,7 @@ export class Embedding {
 }
 
 const embedWithAda002 = async (input: string): Promise<number[]> => {
-  const openAIEmbedding = openaiClient.embedding(AIModels.OPEN_AI_EMBEDDING, {
+  const openAIEmbedding = openaiClient.embedding(EmbeddingModels.OPEN_AI_EMBEDDING, {
     dimensions: 1536,
     user: "test-pd-chat-user",
   });
@@ -37,7 +37,7 @@ const embedWithAda002 = async (input: string): Promise<number[]> => {
 
 const embedWithNomic = async (input: string): Promise<number[]> => {
   const response = await ollama.embeddings({
-    model: AIModels.OLLAMA_EMBEDDING,
+    model: EmbeddingModels.OLLAMA_EMBEDDING,
     prompt: input,
   });
 

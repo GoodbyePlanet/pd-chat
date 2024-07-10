@@ -2,7 +2,7 @@ import ollama from "ollama";
 import { generateText } from "ai";
 import { cosineDistance, desc, gt, sql } from "drizzle-orm";
 import dedent from "ts-dedent";
-import { AIModels } from "@/types";
+import { EmbeddingModels, Models } from "@/types";
 import { client, drizzleClient } from "@/utils/pg-drizzle-client";
 import { documents } from "../drizzle-schema";
 import { openaiClient } from "@/utils/openaiClient";
@@ -10,7 +10,7 @@ import { supabaseClient } from "@/utils/supabaseClient";
 import { anthropic } from "@/utils/anthropicClient";
 
 const similaritySearchWithOpenAI = async (): Promise<void> => {
-  const openAIEmbedding = openaiClient.embedding(AIModels.OPEN_AI_EMBEDDING, {
+  const openAIEmbedding = openaiClient.embedding(EmbeddingModels.OPEN_AI_EMBEDDING, {
     dimensions: 1536,
     user: "test-pd-chat-user",
   });
@@ -69,7 +69,7 @@ const getSimilarDocuments = async (
 
 const getOllamaEmbeddings = async (prompt: string): Promise<number[]> => {
   const embeddingResponse = await ollama.embeddings({
-    model: AIModels.OLLAMA_EMBEDDING,
+    model: EmbeddingModels.OLLAMA_EMBEDDING,
     prompt,
   });
 
@@ -94,7 +94,7 @@ const chatWithOllama3 = async (userInput: string): Promise<void> => {
   const context = createSystemContext(similarDocuments[0].content, similarDocuments[0].docsurl);
 
   const response = await ollama.chat({
-    model: AIModels.LLAMA_3,
+    model: Models.LLAMA_3,
     messages: [
       {
         role: "system",
@@ -119,7 +119,7 @@ const chatWithAnthropic = async (userInput: string): Promise<void> => {
   const context = createSystemContext(similarDocuments[0].content, similarDocuments[0].docsurl);
 
   const response = await generateText({
-    model: anthropic.chat(AIModels.CLAUDE_3_HAIKU),
+    model: anthropic.chat(Models.CLAUDE_3_HAIKU),
     messages: [
       { role: "system", content: context },
       { role: "user", content: userInput },
