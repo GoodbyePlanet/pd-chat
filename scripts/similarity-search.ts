@@ -114,11 +114,16 @@ const chatWithOllama3 = async (userInput: string): Promise<void> => {
 };
 
 const chatWithAnthropic = async (userInput: string): Promise<void> => {
-  const chat = anthropic.chat(AIModels.CLAUDE_3_HAIKU);
+  const queryEmbeddings = await getOllamaEmbeddings(userInput);
+  const similarDocuments = await getSimilarDocuments(queryEmbeddings);
+  const context = createSystemContext(similarDocuments[0].content, similarDocuments[0].docsurl);
 
   const response = await generateText({
-    model: chat,
-    prompt: userInput,
+    model: anthropic.chat(AIModels.CLAUDE_3_HAIKU),
+    messages: [
+      { role: "system", content: context },
+      { role: "user", content: userInput },
+    ],
   });
 
   console.log("RESPONSE", response.text);
@@ -126,5 +131,5 @@ const chatWithAnthropic = async (userInput: string): Promise<void> => {
 
 (async () => {
   // await chatWithOllama3("What is profit share?");
-  await chatWithAnthropic("Write a vegetarian lasagna recipe for 4 people.");
+  await chatWithAnthropic("What is profit share?");
 })();
