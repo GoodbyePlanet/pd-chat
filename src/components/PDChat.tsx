@@ -6,6 +6,8 @@ import { Answer } from "@/components/Answer";
 
 import styles from "./Loader.module.css";
 import { Logout } from "@/components/Logout";
+import LLMProvider from "@/components/LLMProvider";
+import Header from "@/components/Header";
 
 const TIMEOUT_ERROR_CODE = "504";
 
@@ -25,7 +27,7 @@ const createQuestion: MutationFunction = async (question): Promise<MutationRespo
   });
 
   if (!response.ok) {
-    throw new Error(`Failed to create post: ${response.status}`);
+    throw new Error(`Failed to create question: ${response.status}`);
   }
 
   return response.json();
@@ -55,7 +57,7 @@ export default function PDChat(): ReactElement {
         inputRef.current.value = "";
       }
     } catch (error) {
-      console.error("Failed to create post:", error);
+      console.error("Failed to create question:", error);
     }
   };
 
@@ -63,9 +65,7 @@ export default function PDChat(): ReactElement {
 
   return (
     <>
-      <Logout />
       <div className="w-4/5 md:w-3/5 lg:w-3/5">
-        <h3 className="mb-5 mt-5 text-center text-5xl font-bold text-pd">PD Chat</h3>
         <p className="mb-5 text-center italic">
           Please note that this is the <span className="font-medium">MVP version</span>, and there
           is a possibility of receiving incorrect answers. We kindly request you to submit any such

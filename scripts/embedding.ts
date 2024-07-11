@@ -1,6 +1,6 @@
 import ollama from "ollama";
 import { openaiClient } from "@/utils/openaiClient";
-import { Models, EmbeddingProviders, EmbeddingModels } from "@/types";
+import { EmbeddingModels, EmbeddingProviders } from "@/types";
 import { EmbeddingModelV1Embedding } from "@ai-sdk/provider";
 
 export class Embedding {

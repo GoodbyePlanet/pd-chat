@@ -5,12 +5,13 @@ import PDChat from "@/components/PDChat";
 import { SignIn } from "@/components/SignIn";
 
 import styles from "../components/Loader.module.css";
+import Header from "@/components/Header";
 
 const inter = Inter({ subsets: ["latin"] });
 
 const queryClient = new QueryClient();
 
-function App() {
+function Home() {
   const { status } = useSession();
 
   if (status === "loading") {
@@ -28,10 +29,13 @@ function App() {
   return <SignIn />;
 }
 
-export default function Home() {
+export default function App() {
   return (
-    <main className={`flex min-h-screen flex-col items-center justify-center ${inter.className}`}>
-      <App />
-    </main>
+    <div>
+      <Header />
+      <main className={`flex min-h-screen flex-col items-center justify-center ${inter.className}`}>
+        <Home />
+      </main>
+    </div>
   );
 }
