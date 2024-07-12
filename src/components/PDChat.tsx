@@ -1,13 +1,9 @@
 import { ReactElement, useRef } from "react";
 import { useMutation } from "react-query";
-import { signOut } from "next-auth/react";
 import SearchBox from "@/components/Search";
 import { Answer } from "@/components/Answer";
 
 import styles from "./Loader.module.css";
-import { Logout } from "@/components/Logout";
-import LLMProvider from "@/components/LLMProvider";
-import Header from "@/components/Header";
 
 const TIMEOUT_ERROR_CODE = "504";
 
