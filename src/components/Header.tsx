@@ -1,7 +1,12 @@
-import { ReactElement, useState } from "react";
+import { ReactElement } from "react";
 import { Logout } from "@/components/Logout";
 
-const llmProviders = [
+type LLMProviders = {
+  name: string;
+  description: string;
+};
+
+const llmProviders: LLMProviders[] = [
   {
     name: "Ollama",
     description: "ollama3",
@@ -28,7 +33,7 @@ export default function Header(): ReactElement {
             id="countries"
             className="border-gray-400 rounded border bg-white p-2.5 font-semibold text-pd shadow"
           >
-            {llmProviders.map((llm, index) => (
+            {llmProviders.map((llm: LLMProviders, index: number) => (
               <option key={index} value={llm.name}>
                 {llm.description}
               </option>
