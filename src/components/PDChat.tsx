@@ -4,6 +4,8 @@ import SearchBox from "@/components/Search";
 import { Answer } from "@/components/Answer";
 
 import styles from "./Loader.module.css";
+import { useRecoilValue } from "recoil";
+import { llmProviderState } from "@/store/llm-provider";
 
 const TIMEOUT_ERROR_CODE = "504";
 
@@ -31,6 +33,7 @@ const createQuestion: MutationFunction = async (question): Promise<MutationRespo
 
 export default function PDChat(): ReactElement {
   const mutation = useMutation<MutationResponse, Error, { question: string }>(createQuestion);
+  const currentLlmProvider = useRecoilValue(llmProviderState);
 
   const inputRef = useRef<HTMLInputElement>(null);
 
