@@ -1,8 +1,9 @@
-import { Databases, Document, EmbeddingProviders } from "@/types";
+import { Databases, Document } from "@/types";
 import { supabaseClient } from "@/utils/supabaseClient";
 import { drizzleClient } from "@/utils/pg-drizzle-client";
-import { documents as documentsTable } from "../drizzle-schema";
+import { documents, documents as documentsTable } from "../drizzle-schema";
 import { Embedding } from "./embedding";
+import { cosineDistance, desc, gt, sql } from "drizzle-orm";
 
 export class DatabaseClient {
   readonly database: string;
@@ -12,7 +13,11 @@ export class DatabaseClient {
   }
 
   private getDBClientStoreFunc(): StoreFunc {
-    return storeFuncsByDatabaseName[this.database as keyof DBClientFunc];
+    return storeFuncsByDBName[this.database as keyof DBClientStoreFunc];
+  }
+
+  private getSimilaritySearchFunc(): SimilarityFunc {
+    return similaritySearchFuncsByDBName[this.database as keyof DBClientSimilarityFunc];
   }
 
   public async storeEmbeddingsInDB(documents: Document[], embedding: Embedding): Promise<void> {
@@ -31,7 +36,43 @@ export class DatabaseClient {
       console.error("An error occurred while creating/saving embeddings!");
     }
   }
+
+  public async getSimilarDocumentsFromDB(queryEmbeddings: number[]): Promise<SimilarDocument[]> {
+    const similaritySearchFunc = this.getSimilaritySearchFunc();
+
+    return similaritySearchFunc(queryEmbeddings);
+  }
 }
+
+const similarDocumentsInPgVector = async (queryEmbedding: number[]): Promise<SimilarDocument[]> => {
+  const similarity = sql<number>`1 - (
+  ${cosineDistance(documents.embedding, queryEmbedding)}
+  )`;
+
+  return drizzleClient
+    .select({
+      title: documents.title,
+      content: documents.content,
+      docsurl: documents.docsurl,
+      similarity,
+    })
+    .from(documents)
+    .where(gt(similarity, 0.5))
+    .orderBy((t) => desc(t.similarity))
+    .limit(1);
+};
+
+const similarDocumentsInSupabase = async (querystring: number[]): Promise<SimilarDocument[]> => {
+  // TODO: return real data from supabase
+  return Promise.resolve([
+    {
+      title: "supabase",
+      content: "supabase content",
+      docsurl: "http://url.com",
+      similarity: 1,
+    },
+  ]);
+};
 
 const storeInSupabase = async (document: Document, embedding: number[]): Promise<void> => {
   await supabaseClient.from("documents").insert({
@@ -56,12 +97,31 @@ const storeInPgVector = async (document: Document, embedding: number[]): Promise
 
 type StoreFunc = (document: Document, embedding: number[]) => void;
 
-type DBClientFunc = {
+type SimilarityFunc = (queryEmbedding: number[]) => Promise<SimilarDocument[]>;
+
+type DBClientStoreFunc = {
   supabase: StoreFunc;
   pgVector: StoreFunc;
 };
 
-const storeFuncsByDatabaseName: DBClientFunc = {
-  [Databases.PG_VECTOR]: storeInPgVector,
+type DBClientSimilarityFunc = {
+  supabase: SimilarityFunc;
+  pgVector: SimilarityFunc;
+};
+
+type SimilarDocument = {
+  title: string;
+  content: string;
+  docsurl: string;
+  similarity: number;
+};
+
+const storeFuncsByDBName: DBClientStoreFunc = {
   [Databases.SUPABASE]: storeInSupabase,
+  [Databases.PG_VECTOR]: storeInPgVector,
+};
+
+const similaritySearchFuncsByDBName: DBClientSimilarityFunc = {
+  [Databases.SUPABASE]: similarDocumentsInSupabase,
+  [Databases.PG_VECTOR]: similarDocumentsInPgVector,
 };

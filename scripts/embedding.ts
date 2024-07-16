@@ -31,7 +31,7 @@ const embedWithAda002 = async (input: string): Promise<number[]> => {
   });
   const embeddingResponse = await openAIEmbedding.doEmbed({ values: [input] });
 
-  // TODO: this has to be tested since...
+  // TODO: this has to be tested...
   return embeddingResponse.embeddings.flatMap((embedding: EmbeddingModelV1Embedding) => embedding);
 };
 

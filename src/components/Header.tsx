@@ -10,15 +10,15 @@ type LLMProviders = {
 
 const llmProviders: LLMProviders[] = [
   {
-    name: "Ollama",
+    name: "OLLAMA",
     description: "ollama3",
   },
   {
-    name: "OpenAI",
+    name: "OPEN_AI",
     description: "gpt 3.5 turbo",
   },
   {
-    name: "Anthropic",
+    name: "ANTHROPIC",
     description: "claude",
   },
 ];

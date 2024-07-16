@@ -4,6 +4,7 @@ import { openaiClient } from "@/utils/openaiClient";
 import { supabaseClient } from "@/utils/supabaseClient";
 import { EmbeddingModels, Models } from "@/types";
 import { EmbeddingModelV1Embedding } from "@ai-sdk/provider";
+import { Embedding } from "../../../scripts/embedding";
 
 type Data = {
   answer: string;
@@ -82,16 +83,25 @@ export default async function handler(
   res: NextApiResponse<Data | ErrorResponse>
 ) {
   try {
+    const llm = req.body?.llm;
+
+    console.log("LLM", llm);
+    if (!llm) {
+      res.status(400).json({ message: "LLM has to be provider!" });
+    }
+
+    const embeddings = new Embedding(llm);
+
     const input = extractAndSanitizeQuestion(req);
-    const queryEmbedding = await getQueryEmbedding(input);
+    const queryEmbedding = await embeddings.generate(input);
 
     if (queryEmbedding === null || queryEmbedding === undefined) {
       res.status(500).json({ message: "Failed to create an embedding for question!" });
     }
 
-    const embedding = queryEmbedding.embeddings.flatMap(
-      (embedding: EmbeddingModelV1Embedding) => embedding
-    );
+    // const embedding = queryEmbedding.embeddings.flatMap(
+    //   (embedding: EmbeddingModelV1Embedding) => embedding
+    // );
     const { data: chunks, error: matchError } = await getContentFromDB(embedding);
 
     if (matchError) {

@@ -13,15 +13,18 @@ type MutationResponse = {
   answer: string;
 };
 
-type MutationFunction = (question: { question: string }) => Promise<MutationResponse>;
+type MutationFunction = (mutationData: {
+  question: string;
+  llm: string;
+}) => Promise<MutationResponse>;
 
-const createQuestion: MutationFunction = async (question): Promise<MutationResponse> => {
+const createQuestion: MutationFunction = async ({ question, llm }): Promise<MutationResponse> => {
   const response = await fetch("/api/answer", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(question),
+    body: JSON.stringify({ question, llm }),
   });
 
   if (!response.ok) {
@@ -32,7 +35,9 @@ const createQuestion: MutationFunction = async (question): Promise<MutationRespo
 };
 
 export default function PDChat(): ReactElement {
-  const mutation = useMutation<MutationResponse, Error, { question: string }>(createQuestion);
+  const mutation = useMutation<MutationResponse, Error, { question: string; llm: string }>(
+    createQuestion
+  );
   const currentLlmProvider = useRecoilValue(llmProviderState);
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -49,7 +54,7 @@ export default function PDChat(): ReactElement {
 
   const handleCreateQuestion = async (question: string): Promise<void> => {
     try {
-      await mutation.mutateAsync({ question });
+      await mutation.mutateAsync({ question, llm: currentLlmProvider });
       await saveQuestion(question);
 
       if (inputRef.current) {
