@@ -6,6 +6,7 @@ import { SignIn } from "@/components/SignIn";
 
 import styles from "../components/Loader.module.css";
 import Header from "@/components/Header";
+import { RecoilRoot } from "recoil";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -31,11 +32,11 @@ function Home() {
 
 export default function App() {
   return (
-    <div>
+    <RecoilRoot>
       <Header />
       <main className={`flex min-h-screen flex-col items-center justify-center ${inter.className}`}>
         <Home />
       </main>
-    </div>
+    </RecoilRoot>
   );
 }

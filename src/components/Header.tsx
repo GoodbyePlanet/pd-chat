@@ -1,5 +1,7 @@
-import { ReactElement } from "react";
+import { ChangeEvent, ReactElement } from "react";
 import { Logout } from "@/components/Logout";
+import { useRecoilState } from "recoil";
+import { selectedLLMProvider } from "@/store/llm-provider";
 
 type LLMProviders = {
   name: string;
@@ -22,6 +24,12 @@ const llmProviders: LLMProviders[] = [
 ];
 
 export default function Header(): ReactElement {
+  const [selectedProvider, setSelectedProvider] = useRecoilState(selectedLLMProvider);
+
+  const handleLLMProviderChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    setSelectedProvider(event.target.value);
+  };
+
   return (
     <header className="bg-white">
       <nav aria-label="Global" className="mx-auto flex items-center justify-between p-6 lg:px-8">
@@ -32,6 +40,8 @@ export default function Header(): ReactElement {
           <select
             id="countries"
             className="border-gray-400 rounded border bg-white p-2.5 font-semibold text-pd shadow"
+            value={selectedProvider}
+            onChange={handleLLMProviderChange}
           >
             {llmProviders.map((llm: LLMProviders, index: number) => (
               <option key={index} value={llm.name}>
