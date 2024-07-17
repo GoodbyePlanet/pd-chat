@@ -55,7 +55,7 @@ export default function PDChat(): ReactElement {
   const handleCreateQuestion = async (question: string): Promise<void> => {
     try {
       await mutation.mutateAsync({ question, llm: currentLlmProvider });
-      await saveQuestion(question);
+      // await saveQuestion(question);
 
       if (inputRef.current) {
         inputRef.current.value = "";

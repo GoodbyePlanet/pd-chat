@@ -1,11 +1,11 @@
 import { atom, selector } from "recoil";
-import { Models } from "@/types";
+import { EmbeddingProviders } from "@/types";
 
 type LLMProvider = string;
 
 const selectedLLMProvider = atom<LLMProvider>({
   key: "llmProvider",
-  default: Models.LLAMA_3,
+  default: EmbeddingProviders.OLLAMA,
 });
 
 const llmProviderState = selector({

@@ -27,7 +27,8 @@ export const Answer = ({ question, text }: AnswerProps): ReactElement => {
   const [isWrongAnswerSubmitted, setIsWrongAnswerSubmitted] = useState<boolean>(false);
 
   useEffect(() => {
-    setWords(text.split(" "));
+    console.log("TEXT", text);
+    setWords(text?.split(" "));
   }, [text]);
 
   useEffect(() => {

@@ -19,6 +19,12 @@ export enum EmbeddingProviders {
   OLLAMA = "OLLAMA",
 }
 
+export enum LLM {
+  OPEN_AI = "OPEN_AI",
+  OLLAMA = "OLLAMA",
+  ANTHROPIC = "ANTHROPIC",
+}
+
 export type Document = {
   title: string;
   content: string;

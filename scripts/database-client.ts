@@ -109,7 +109,7 @@ type DBClientSimilarityFunc = {
   pgVector: SimilarityFunc;
 };
 
-type SimilarDocument = {
+export type SimilarDocument = {
   title: string;
   content: string;
   docsurl: string;
