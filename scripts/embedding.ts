@@ -14,13 +14,17 @@ export class Embedding {
     const embedFunc = EMBED_FUNC[this.embeddingProvider as keyof EmbedFunc];
 
     try {
-      return embedFunc(input);
+      return embedFunc(this.extractAndSanitizeQuestion(input));
     } catch (error: any) {
       console.error(
         `An error occurred while generating embedding for with ${this.embeddingProvider} provider!`
       );
       throw error;
     }
+  }
+
+  private extractAndSanitizeQuestion(userInput: string): string {
+    return userInput.trim().replace(/\n/g, " ");
   }
 }
 

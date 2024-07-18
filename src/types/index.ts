@@ -30,3 +30,10 @@ export type Document = {
   content: string;
   docsUrl: string;
 };
+
+export type SimilarDocument = {
+  title: string;
+  content: string;
+  docsurl: string;
+  similarity: number;
+};

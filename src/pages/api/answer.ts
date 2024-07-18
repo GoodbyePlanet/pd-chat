@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { supabaseClient } from "@/utils/supabaseClient";
-import { LLMChat } from "../../../scripts/llm-chat";
+import { LLMChat } from "../../rag/llm-chat";
 
 type Data = {
   answer: string;
