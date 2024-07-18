@@ -1,11 +1,11 @@
 import { generateText } from "ai";
-import ollama from "ollama";
 import dedent from "ts-dedent";
 import { Embedding } from "./embedding";
 import { DatabaseClient, SimilarDocument } from "./database-client";
 import { EmbeddingProviders, LLM, Models } from "@/types";
 import { openaiClient } from "@/utils/openaiClient";
 import { anthropic } from "@/utils/anthropicClient";
+import { ollama } from "@/utils/ollamaClient";
 
 export class LLMChat {
   readonly embedding: Embedding;
@@ -35,29 +35,33 @@ export class LLMChat {
   };
 
   private async ollamaChat(userInput: string, documents: SimilarDocument[]): Promise<string> {
-    const response = await ollama.chat({
-      model: Models.LLAMA_3,
-      messages: this.createChatCompletionMessages(
-        documents[0].content,
-        documents[0].docsurl,
-        userInput
-      ),
-    });
-
-    return response.message?.content;
-  }
-
-  private async openAIChat(userInput: string, documents: SimilarDocument[]): Promise<string> {
-    const chat = openaiClient.chat(Models.DAVINCI_TURBO);
-    const response = await chat.doGenerate({
-      inputFormat: "messages",
-      mode: { type: "regular" },
-      prompt: [
+    const response = await generateText({
+      model: ollama.chat(Models.LLAMA_3),
+      messages: [
         {
           role: "system",
           content: this.createSystemContext(documents[0].content, documents[0].docsurl),
         },
-        { role: "user", content: [{ type: "text", text: userInput }] },
+        { role: "user", content: userInput },
+      ],
+    });
+
+    if (response.finishReason === "error") {
+      return "Could not generate response!";
+    }
+
+    return response.text as string;
+  }
+
+  private async openAIChat(userInput: string, documents: SimilarDocument[]): Promise<string> {
+    const response = await generateText({
+      model: openaiClient.chat(Models.DAVINCI_TURBO),
+      messages: [
+        {
+          role: "system",
+          content: this.createSystemContext(documents[0].content, documents[0].docsurl),
+        },
+        { role: "user", content: userInput },
       ],
     });
 
