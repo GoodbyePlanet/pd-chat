@@ -1,5 +1,5 @@
 import ollama from "ollama";
-import { openaiClient } from "@/utils/openaiClient";
+import { openaiClient } from "@/rag/llm-clients/openaiClient";
 import { EmbeddingModels, EmbeddingProviders } from "@/types";
 import { EmbeddingModelV1Embedding } from "@ai-sdk/provider";
 
@@ -14,17 +14,13 @@ export class Embedding {
     const embedFunc = EMBED_FUNC[this.embeddingProvider as keyof EmbedFunc];
 
     try {
-      return embedFunc(this.extractAndSanitizeQuestion(input));
+      return embedFunc(input);
     } catch (error: any) {
       console.error(
         `An error occurred while generating embedding for with ${this.embeddingProvider} provider!`
       );
       throw error;
     }
-  }
-
-  private extractAndSanitizeQuestion(userInput: string): string {
-    return userInput.trim().replace(/\n/g, " ");
   }
 }
 

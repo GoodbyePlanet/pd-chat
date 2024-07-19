@@ -1,5 +1,5 @@
-import { BaseLLMChat } from "@/rag/base-llm-chat";
-import { openaiClient } from "@/utils/openaiClient";
+import { BaseLLMChat } from "@/rag/chat/base-llm-chat";
+import { openaiClient } from "@/rag/llm-clients/openaiClient";
 import { Models } from "@/types";
 
 export class OpenAIChat extends BaseLLMChat {

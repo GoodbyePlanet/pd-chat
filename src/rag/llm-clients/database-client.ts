@@ -1,8 +1,8 @@
 import { Databases, Document } from "@/types";
-import { supabaseClient } from "@/utils/supabaseClient";
-import { drizzleClient } from "@/utils/pg-drizzle-client";
-import { documents, documents as documentsTable } from "../drizzle-schema";
-import { Embedding } from "./embedding";
+import { supabaseClient } from "@/database/supabaseClient";
+import { drizzleClient } from "@/database/pg-drizzle-client";
+import { documents, documents as documentsTable } from "../../../drizzle-schema";
+import { Embedding } from "../embedding/embedding";
 import { cosineDistance, desc, gt, sql } from "drizzle-orm";
 
 export class DatabaseClient {

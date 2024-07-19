@@ -1,11 +1,11 @@
 import { CoreMessage, generateText, LanguageModel } from "ai";
-import { SimilarDocument } from "@/types";
+import { ChatResponse, SimilarDocument } from "@/types";
 import dedent from "ts-dedent";
 
 export abstract class BaseLLMChat {
   protected abstract model: LanguageModel;
 
-  public async chat(userInput: string, documents: SimilarDocument[]): Promise<string> {
+  public async chat(userInput: string, documents: SimilarDocument[]): Promise<ChatResponse> {
     const response = await generateText({
       model: this.model,
       messages: this.createChatCompletionMessages(
@@ -16,10 +16,10 @@ export abstract class BaseLLMChat {
     });
 
     if (response.finishReason === "error") {
-      return "Could not generate response!";
+      return { error: "Could not generate chat completion!" };
     }
 
-    return response.text as string;
+    return { text: response.text };
   }
 
   protected createSystemContext(contentText: string, docsUrl: string): string {

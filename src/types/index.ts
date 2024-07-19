@@ -37,3 +37,8 @@ export type SimilarDocument = {
   docsurl: string;
   similarity: number;
 };
+
+export type ChatResponse = {
+  text?: string;
+  error?: string;
+};

@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { supabaseClient } from "@/utils/supabaseClient";
+import { supabaseClient } from "@/database/supabaseClient";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { question } = req.body;

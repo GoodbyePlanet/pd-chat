@@ -1,10 +1,10 @@
-import { Embedding } from "../../scripts/embedding";
-import { DatabaseClient } from "../../scripts/database-client";
-import { EmbeddingProviders, LLM } from "@/types";
-import { OllamaChat } from "@/rag/ollama-chat";
-import { OpenAIChat } from "@/rag/open-ai-chat";
-import { AnthropicChat } from "@/rag/anthropic-chat";
-import { BaseLLMChat } from "@/rag/base-llm-chat";
+import { Embedding } from "../embedding/embedding";
+import { DatabaseClient } from "../llm-clients/database-client";
+import { ChatResponse, EmbeddingProviders, LLM } from "@/types";
+import { OllamaChat } from "@/rag/chat/ollama-chat";
+import { OpenAIChat } from "@/rag/chat/open-ai-chat";
+import { AnthropicChat } from "@/rag/chat/anthropic-chat";
+import { BaseLLMChat } from "@/rag/chat/base-llm-chat";
 
 type ChatClass = {
   [key: string]: BaseLLMChat;
@@ -24,8 +24,8 @@ export class LLMChat {
     this.llmChat = this.chatClass[llmModel];
   }
 
-  public async getAnswer(userInput: string): Promise<string> {
-    const embeddings = await this.embedding.generate(userInput);
+  public async getAnswer(userInput: string): Promise<ChatResponse> {
+    const embeddings = await this.embedding.generate(this.extractAndSanitizeQuestion(userInput));
     const similarDocs = await this.dbClient.getSimilarDocumentsFromDB(embeddings);
 
     return this.llmChat.chat(userInput, similarDocs);
@@ -36,4 +36,8 @@ export class LLMChat {
     OPEN_AI: new OpenAIChat(),
     ANTHROPIC: new AnthropicChat(),
   };
+
+  private extractAndSanitizeQuestion(userInput: string): string {
+    return userInput.trim().replace(/\n/g, " ");
+  }
 }

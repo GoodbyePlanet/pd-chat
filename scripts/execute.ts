@@ -1,6 +1,6 @@
 import { Databases, Document, EmbeddingProviders } from "@/types";
-import { Embedding } from "./embedding";
-import { DatabaseClient } from "./database-client";
+import { Embedding } from "@/rag/embedding/embedding";
+import { DatabaseClient } from "@/rag/llm-clients/database-client";
 
 import benefits from "@/documents/benefits.json";
 import culture from "@/documents/culture.json";

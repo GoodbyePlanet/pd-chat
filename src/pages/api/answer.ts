@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { supabaseClient } from "@/utils/supabaseClient";
-import { LLMChat } from "../../rag/llm-chat";
+import { supabaseClient } from "@/database/supabaseClient";
+import { LLMChat } from "../../rag/chat/llm-chat";
 
 type Data = {
   answer: string;
@@ -43,11 +43,11 @@ export default async function handler(
     const chat = new LLMChat(llm);
     const answer = await chat.getAnswer(req.body?.question);
 
-    if (answer === null || answer === undefined) {
+    if (answer.error) {
       res.status(500).json({ message: "Failed to create chat completion!" });
     }
 
-    res.status(200).json({ answer });
+    res.status(200).json({ answer: (answer?.text as string) || "" });
   } catch (error: any) {
     console.error("An error occurred", error);
     res.status(500).json({ message: error.message });

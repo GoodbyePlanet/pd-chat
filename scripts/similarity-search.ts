@@ -3,11 +3,11 @@ import { generateText } from "ai";
 import { cosineDistance, desc, gt, sql } from "drizzle-orm";
 import dedent from "ts-dedent";
 import { EmbeddingModels, Models } from "@/types";
-import { client, drizzleClient } from "@/utils/pg-drizzle-client";
+import { client, drizzleClient } from "@/database/pg-drizzle-client";
 import { documents } from "../drizzle-schema";
-import { openaiClient } from "@/utils/openaiClient";
-import { supabaseClient } from "@/utils/supabaseClient";
-import { anthropic } from "@/utils/anthropicClient";
+import { openaiClient } from "@/rag/llm-clients/openaiClient";
+import { supabaseClient } from "@/database/supabaseClient";
+import { anthropic } from "@/rag/llm-clients/anthropicClient";
 
 const similaritySearchWithOpenAI = async (): Promise<void> => {
   const openAIEmbedding = openaiClient.embedding(EmbeddingModels.OPEN_AI_EMBEDDING, {

@@ -1,5 +1,5 @@
-import { BaseLLMChat } from "@/rag/base-llm-chat";
-import { ollama } from "@/utils/ollamaClient";
+import { BaseLLMChat } from "@/rag/chat/base-llm-chat";
+import { ollama } from "@/rag/llm-clients/ollamaClient";
 import { Models } from "@/types";
 
 export class OllamaChat extends BaseLLMChat {
