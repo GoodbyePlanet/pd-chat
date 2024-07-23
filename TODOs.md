@@ -5,5 +5,5 @@
    create our own RAG
 5. Fix ``12 vulnerabilities (2 low, 8 moderate, 2 high)`` - DONE
 6. Extend ollama to use more than one model
-7. Add Mistral AI https://console.mistral.ai/billing/
+7. Add Mistral AI https://console.mistral.ai/billing/ - DONE
 8. Instead of figuring out where to deploy ollama consider using perplexity of https://console.groq.com/docs/models

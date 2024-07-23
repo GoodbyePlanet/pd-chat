@@ -22,10 +22,6 @@ export abstract class BaseLLMChat {
     return { text: response.text };
   }
 
-  public getModel(): string {
-    return this.model.provider;
-  }
-
   protected createSystemContext(contentText: string, docsUrl: string): string {
     return dedent`You are a very enthusiastic representative of Productdock company who loves to help employees. Given the following:
 
