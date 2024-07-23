@@ -1,4 +1,4 @@
-import { ChangeEvent, ReactElement } from "react";
+import { ReactElement, useState } from "react";
 import { Logout } from "@/components/Logout";
 import { useRecoilState } from "recoil";
 import { selectedLLMProvider } from "@/store/llm-provider";
@@ -6,32 +6,45 @@ import { selectedLLMProvider } from "@/store/llm-provider";
 type LLMProviders = {
   name: string;
   description: string;
+  link: string;
 };
 
 const llmProviders: LLMProviders[] = [
   {
     name: "OLLAMA",
     description: "ollama3",
+    link: "https://ollama.com/library/llama3",
   },
   {
     name: "OPEN_AI",
     description: "gpt 3.5 turbo",
+    link: "https://platform.openai.com/docs/models/gpt-3-5-turbo",
   },
   {
     name: "ANTHROPIC",
     description: "claude",
+    link: "https://www.anthropic.com/news/claude-3-haiku",
   },
   {
     name: "MISTRAL",
     description: "mistral-large",
+    link: "https://mistral.ai/news/mistral-large",
   },
 ];
 
 export default function Header(): ReactElement {
   const [selectedProvider, setSelectedProvider] = useRecoilState(selectedLLMProvider);
+  const [isModelSelectOpen, setIsModelSelectOpen] = useState(false);
 
-  const handleLLMProviderChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    setSelectedProvider(event.target.value);
+  const toggleModelProviderSelect = (): void => setIsModelSelectOpen(!isModelSelectOpen);
+
+  const handleLLMProviderChange = (llmName: string) => {
+    setSelectedProvider(llmName);
+    setIsModelSelectOpen(false);
+  };
+
+  const getLLMProviderName = (): string => {
+    return llmProviders.filter((llm) => llm.name === selectedProvider)[0]?.description;
   };
 
   return (
@@ -40,20 +53,60 @@ export default function Header(): ReactElement {
         <div className="flex">
           <span className="">PD Chat</span>
         </div>
-        <form className="mx-auto flex max-w-sm items-center justify-center">
-          <select
-            id="countries"
-            className="border-gray-400 rounded border bg-white p-2.5 font-semibold text-pd shadow"
-            value={selectedProvider}
-            onChange={handleLLMProviderChange}
+        <div className="relative">
+          <button
+            id="dropdownDefaultButton"
+            data-dropdown-toggle="dropdown"
+            className="bg-blue-700 inline-flex items-center rounded-lg px-5 py-2.5 text-center font-medium"
+            type="button"
+            onClick={toggleModelProviderSelect}
           >
-            {llmProviders.map((llm: LLMProviders, index: number) => (
-              <option key={index} value={llm.name}>
-                {llm.description}
-              </option>
-            ))}
-          </select>
-        </form>
+            {getLLMProviderName()}{" "}
+            <svg
+              className="ms-3 h-2.5 w-2.5"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 10 6"
+            >
+              <path stroke="currentColor" d="m1 1 4 4 4-4" />
+            </svg>
+          </button>
+          <div
+            id="dropdown"
+            className={`${
+              isModelSelectOpen ? "block" : "hidden"
+            } divide-gray-100 dark:bg-gray-700 absolute top-12 z-10 w-44 divide-y rounded-lg bg-white shadow`}
+          >
+            <ul>
+              {llmProviders.map((llm: LLMProviders, index: number) => (
+                <li
+                  className="bg-sky-500 hover:bg-sky-700 cursor-pointer px-4 py-2"
+                  key={index}
+                  value={llm.name}
+                  onClick={() => handleLLMProviderChange(llm.name)}
+                >
+                  <div className="flex justify-between">
+                    <p>{llm.description}</p>{" "}
+                    <a href={llm.link} target="_blank">
+                      <svg
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <circle cx="12" cy="12" r="10" stroke="black" />
+                        <line x1="12" y1="16" x2="12" y2="12" stroke="black" />
+                        <circle cx="12" cy="9" r="1" fill="black" />
+                      </svg>
+                    </a>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
         <Logout />
       </nav>
     </header>
