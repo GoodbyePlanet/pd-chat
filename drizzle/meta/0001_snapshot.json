@@ -1,6 +1,6 @@
 {
-  "id": "fdd1a3c5-39e8-4966-a9c5-eac568d8c6e1",
-  "prevId": "fc560312-12d5-48fb-a84d-c8d04c82f8da",
+  "id": "89eda35e-7f6f-4bb1-a888-2c61c8d7fa19",
+  "prevId": "fdd4fc72-d83d-4ff4-ae46-74e04263d1d1",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -42,6 +42,63 @@
       "indexes": {
         "cosine_index": {
           "name": "cosine_index",
+          "columns": [
+            {
+              "expression": "embedding",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last",
+              "opclass": "vector_cosine_ops"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "hnsw",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.documentsMistral": {
+      "name": "documentsMistral",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "title": {
+          "name": "title",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "content": {
+          "name": "content",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "docsurl": {
+          "name": "docsurl",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "embedding": {
+          "name": "embedding",
+          "type": "vector(1024)",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "cosine_index_mistral": {
+          "name": "cosine_index_mistral",
           "columns": [
             {
               "expression": "embedding",

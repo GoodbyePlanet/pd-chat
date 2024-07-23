@@ -1,4 +1,4 @@
-import { Databases, Document, EmbeddingProviders } from "@/types";
+import { Databases, Document, EmbeddingProviders, LLM } from "@/types";
 import { Embedding } from "@/rag/embedding/embedding";
 import { DatabaseClient } from "@/rag/llm-clients/database-client";
 
@@ -21,7 +21,8 @@ import vacationDaysOff from "@/documents/vacation-days-off.json";
     vacationDaysOff,
   ];
 
-  const databaseClient = new DatabaseClient(Databases.PG_VECTOR);
+  // Here you can change database model and embedding provider
+  const databaseClient = new DatabaseClient(Databases.PG_VECTOR, LLM.OLLAMA);
   const embedding = new Embedding(EmbeddingProviders.OLLAMA);
 
   await databaseClient.storeEmbeddingsInDB(documents, embedding);

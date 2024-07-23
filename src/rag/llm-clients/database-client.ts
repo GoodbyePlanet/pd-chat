@@ -1,15 +1,22 @@
-import { Databases, Document } from "@/types";
+import { Databases, Document, LLM } from "@/types";
 import { supabaseClient } from "@/database/supabaseClient";
 import { drizzleClient } from "@/database/pg-drizzle-client";
-import { documents, documents as documentsTable } from "../../../drizzle-schema";
+import {
+  documents,
+  documentsMistral,
+  documentsMistral as mistralDocuments,
+} from "../../../drizzle-schema";
 import { Embedding } from "../embedding/embedding";
 import { cosineDistance, desc, gt, sql } from "drizzle-orm";
+import { PgTable } from "drizzle-orm/pg-core";
 
 export class DatabaseClient {
   readonly database: string;
+  readonly llmModel: string;
 
-  constructor(database: string = Databases.PG_VECTOR) {
+  constructor(database: string = Databases.PG_VECTOR, llmModel: string) {
     this.database = database;
+    this.llmModel = llmModel;
   }
 
   private getDBClientStoreFunc(): StoreFunc {
@@ -18,6 +25,16 @@ export class DatabaseClient {
 
   private getSimilaritySearchFunc(): SimilarityFunc {
     return similaritySearchFuncsByDBName[this.database as keyof DBClientSimilarityFunc];
+  }
+
+  /**
+   * Mistral generates embedding vectors of dimension 1024, and ollama, anthropic... are using vectors of dimension 768,
+   * because of this we need different DB table for Mistral
+   * @param model
+   * @private
+   */
+  private getPgTable(model: string): DocumentsTable {
+    return model === LLM.MISTRAL ? mistralDocuments : documents;
   }
 
   public async storeEmbeddingsInDB(documents: Document[], embedding: Embedding): Promise<void> {
@@ -29,40 +46,46 @@ export class DatabaseClient {
         const embeddings = await embedding.generate(input);
         const storeEmbeddingsInDB = this.getDBClientStoreFunc();
 
-        storeEmbeddingsInDB(doc, embeddings);
+        storeEmbeddingsInDB(doc, embeddings, this.getPgTable(this.llmModel));
         console.log("Embedding stored for: ", doc.title);
       }
     } catch (error: any) {
-      console.error("An error occurred while creating/saving embeddings!");
+      console.error(`An error occurred while creating/saving embeddings! ${error}`);
     }
   }
 
   public async getSimilarDocumentsFromDB(queryEmbeddings: number[]): Promise<SimilarDocument[]> {
     const similaritySearchFunc = this.getSimilaritySearchFunc();
 
-    return similaritySearchFunc(queryEmbeddings);
+    return similaritySearchFunc(queryEmbeddings, this.getPgTable(this.llmModel));
   }
 }
 
-const similarDocumentsInPgVector = async (queryEmbedding: number[]): Promise<SimilarDocument[]> => {
+const similarDocumentsInPgVector = async (
+  queryEmbedding: number[],
+  pgTable: DocumentsTable
+): Promise<SimilarDocument[]> => {
   const similarity = sql<number>`1 - (
-  ${cosineDistance(documents.embedding, queryEmbedding)}
+  ${cosineDistance(pgTable.embedding, queryEmbedding)}
   )`;
 
   return drizzleClient
     .select({
-      title: documents.title,
-      content: documents.content,
-      docsurl: documents.docsurl,
+      title: pgTable.title,
+      content: pgTable.content,
+      docsurl: pgTable.docsurl,
       similarity,
     })
-    .from(documents)
+    .from(pgTable)
     .where(gt(similarity, 0.5))
     .orderBy((t) => desc(t.similarity))
     .limit(1);
 };
 
-const similarDocumentsInSupabase = async (querystring: number[]): Promise<SimilarDocument[]> => {
+const similarDocumentsInSupabase = async (
+  queryEmbedding: number[],
+  dbName: PgTable
+): Promise<SimilarDocument[]> => {
   // TODO: return real data from supabase
   return Promise.resolve([
     {
@@ -83,9 +106,13 @@ const storeInSupabase = async (document: Document, embedding: number[]): Promise
   });
 };
 
-const storeInPgVector = async (document: Document, embedding: number[]): Promise<void> => {
+const storeInPgVector = async (
+  document: Document,
+  embedding: number[],
+  pgTable: DocumentsTable
+): Promise<void> => {
   await drizzleClient
-    .insert(documentsTable)
+    .insert(pgTable)
     .values({
       title: document.title,
       content: document.content,
@@ -95,9 +122,12 @@ const storeInPgVector = async (document: Document, embedding: number[]): Promise
     .execute();
 };
 
-type StoreFunc = (document: Document, embedding: number[]) => void;
+type StoreFunc = (document: Document, embedding: number[], pgTable: DocumentsTable) => void;
 
-type SimilarityFunc = (queryEmbedding: number[]) => Promise<SimilarDocument[]>;
+type SimilarityFunc = (
+  queryEmbedding: number[],
+  dbName: DocumentsTable
+) => Promise<SimilarDocument[]>;
 
 type DBClientStoreFunc = {
   supabase: StoreFunc;
@@ -115,6 +145,8 @@ export type SimilarDocument = {
   docsurl: string;
   similarity: number;
 };
+
+type DocumentsTable = typeof documents | typeof documentsMistral;
 
 const storeFuncsByDBName: DBClientStoreFunc = {
   [Databases.SUPABASE]: storeInSupabase,
