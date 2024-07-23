@@ -28,7 +28,6 @@ async function getContentFromDB(
   return { data, error };
 }
 
-// TODO: this whole thing has to be tested, which this commit only typescript compilation errors are fixed
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data | ErrorResponse>

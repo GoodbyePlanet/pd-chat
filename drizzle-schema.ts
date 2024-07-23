@@ -13,3 +13,17 @@ export const documents = pgTable(
     cosine: index("cosine_index").using("hnsw", table.embedding.op("vector_cosine_ops")),
   })
 );
+
+export const documentsMistral = pgTable(
+  "documentsMistral",
+  {
+    id: serial("id").primaryKey(),
+    title: text("title").notNull(),
+    content: text("content").notNull(),
+    docsurl: text("docsurl").notNull(),
+    embedding: vector("embedding", { dimensions: 1024 }),
+  },
+  (table) => ({
+    cosine: index("cosine_index_mistral").using("hnsw", table.embedding.op("vector_cosine_ops")),
+  })
+);

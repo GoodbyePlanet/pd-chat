@@ -13,6 +13,7 @@ const environmentVariables = z.object({
   POSTGRES_HOST: z.string(),
   POSTGRES_PORT: z.string(),
   ANTHROPIC_API_KEY: z.string(),
+  MISTRAL_API_KEY: z.string(),
 });
 
 declare global {

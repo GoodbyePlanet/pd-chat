@@ -1,10 +1,11 @@
 import { Embedding } from "../embedding/embedding";
 import { DatabaseClient } from "../llm-clients/database-client";
-import { ChatResponse, EmbeddingProviders, LLM } from "@/types";
+import { ChatResponse, Databases, EmbeddingProviders, LLM } from "@/types";
 import { OllamaChat } from "@/rag/chat/ollama-chat";
 import { OpenAIChat } from "@/rag/chat/open-ai-chat";
 import { AnthropicChat } from "@/rag/chat/anthropic-chat";
 import { BaseLLMChat } from "@/rag/chat/base-llm-chat";
+import { MistralAIChat } from "@/rag/chat/mistral-ai-chat";
 
 type ChatClass = {
   [key: string]: BaseLLMChat;
@@ -20,7 +21,7 @@ export class LLMChat {
     const embeddingModel = llmModel === LLM.ANTHROPIC ? EmbeddingProviders.OLLAMA : llmModel;
 
     this.embedding = new Embedding(embeddingModel);
-    this.dbClient = new DatabaseClient();
+    this.dbClient = new DatabaseClient(Databases.PG_VECTOR, llmModel);
     this.llmChat = this.chatClass[llmModel];
   }
 
@@ -35,6 +36,7 @@ export class LLMChat {
     OLLAMA: new OllamaChat(),
     OPEN_AI: new OpenAIChat(),
     ANTHROPIC: new AnthropicChat(),
+    MISTRAL: new MistralAIChat(),
   };
 
   private extractAndSanitizeQuestion(userInput: string): string {

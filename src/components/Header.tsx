@@ -21,6 +21,10 @@ const llmProviders: LLMProviders[] = [
     name: "ANTHROPIC",
     description: "claude",
   },
+  {
+    name: "MISTRAL",
+    description: "mistral-large",
+  },
 ];
 
 export default function Header(): ReactElement {
