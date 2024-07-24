@@ -1,6 +1,8 @@
 export enum Models {
   DAVINCI_TURBO = "gpt-3.5-turbo",
   LLAMA_3 = "llama3",
+  GEMMA_2 = "gemma2",
+  PHI_3 = "phi3:3.8b",
   CLAUDE_3_HAIKU = "claude-3-haiku-20240307",
   MISTRAL_LARGE = "mistral-large-latest",
 }
@@ -24,7 +26,9 @@ export enum EmbeddingProviders {
 
 export enum LLM {
   OPEN_AI = "OPEN_AI",
-  OLLAMA = "OLLAMA",
+  OLLAMA_3 = "OLLAMA_3",
+  GEMMA_2 = "GEMMA_2",
+  PHI_3 = "PHI_3",
   ANTHROPIC = "ANTHROPIC",
   MISTRAL = "MISTRAL",
 }

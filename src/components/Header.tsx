@@ -1,7 +1,8 @@
 import { ReactElement, useState } from "react";
-import { Logout } from "@/components/Logout";
 import { useRecoilState } from "recoil";
+import { Logout } from "@/components/Logout";
 import { selectedLLMProvider } from "@/store/llm-provider";
+import { Models } from "@/types";
 
 type LLMProviders = {
   name: string;
@@ -11,22 +12,32 @@ type LLMProviders = {
 
 const llmProviders: LLMProviders[] = [
   {
-    name: "OLLAMA",
+    name: Models.LLAMA_3,
     description: "ollama3",
     link: "https://ollama.com/library/llama3",
   },
   {
-    name: "OPEN_AI",
+    name: Models.GEMMA_2,
+    description: "gemma2",
+    link: "https://ollama.com/library/gemma2",
+  },
+  {
+    name: Models.PHI_3,
+    description: "phi3:3.8b",
+    link: "https://ollama.com/library/gemma2",
+  },
+  {
+    name: Models.DAVINCI_TURBO,
     description: "gpt 3.5 turbo",
     link: "https://platform.openai.com/docs/models/gpt-3-5-turbo",
   },
   {
-    name: "ANTHROPIC",
+    name: Models.CLAUDE_3_HAIKU,
     description: "claude",
     link: "https://www.anthropic.com/news/claude-3-haiku",
   },
   {
-    name: "MISTRAL",
+    name: Models.MISTRAL_LARGE,
     description: "mistral-large",
     link: "https://mistral.ai/news/mistral-large",
   },
