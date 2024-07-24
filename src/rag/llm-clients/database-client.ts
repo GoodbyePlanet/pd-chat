@@ -1,4 +1,4 @@
-import { Databases, Document, LLM } from "@/types";
+import { Databases, Document, Models } from "@/types";
 import { supabaseClient } from "@/database/supabaseClient";
 import { drizzleClient } from "@/database/pg-drizzle-client";
 import {
@@ -34,7 +34,7 @@ export class DatabaseClient {
    * @private
    */
   private getPgTable(model: string): DocumentsTable {
-    return model === LLM.MISTRAL ? mistralDocuments : documents;
+    return model === Models.MISTRAL_LARGE ? mistralDocuments : documents;
   }
 
   public async storeEmbeddingsInDB(documents: Document[], embedding: Embedding): Promise<void> {

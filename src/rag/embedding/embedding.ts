@@ -4,6 +4,7 @@ import { EmbeddingModels, EmbeddingProviders } from "@/types";
 import { EmbeddingModelV1Embedding } from "@ai-sdk/provider";
 import { mistral } from "@/rag/llm-clients/mistral-client";
 
+// TODO: Make this more generic
 export class Embedding {
   embeddingProvider: string;
 
@@ -27,7 +28,7 @@ export class Embedding {
 
 const embedWithAda002 = async (input: string): Promise<number[]> => {
   const openAIEmbedding = openaiClient.embedding(EmbeddingModels.OPEN_AI_EMBEDDING, {
-    dimensions: 1536, // TODO: this will probably not work, but check it out!
+    dimensions: 1536, // TODO: this will probably not work, but check it out
     user: "test-pd-chat-user",
   });
   const embeddingResponse = await openAIEmbedding.doEmbed({ values: [input] });

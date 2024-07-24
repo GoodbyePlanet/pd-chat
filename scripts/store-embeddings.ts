@@ -22,7 +22,7 @@ import vacationDaysOff from "@/documents/vacation-days-off.json";
   ];
 
   // Here you can change database model and embedding provider
-  const databaseClient = new DatabaseClient(Databases.PG_VECTOR, LLM.OLLAMA);
+  const databaseClient = new DatabaseClient(Databases.PG_VECTOR, LLM.OLLAMA_3);
   const embedding = new Embedding(EmbeddingProviders.OLLAMA);
 
   await databaseClient.storeEmbeddingsInDB(documents, embedding);
