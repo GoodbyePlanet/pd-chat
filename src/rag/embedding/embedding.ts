@@ -1,6 +1,6 @@
 import ollama from "ollama";
 import { openaiClient } from "@/rag/llm-clients/openaiClient";
-import { EmbeddingModels, EmbeddingProviders } from "@/types";
+import { EmbeddingModels, EmbeddingProviders, Models } from "@/types";
 import { EmbeddingModelV1Embedding } from "@ai-sdk/provider";
 import { mistral } from "@/rag/llm-clients/mistral-client";
 
@@ -8,8 +8,24 @@ import { mistral } from "@/rag/llm-clients/mistral-client";
 export class Embedding {
   embeddingProvider: string;
 
-  constructor(embeddingProvider: string = EmbeddingProviders.OLLAMA) {
-    this.embeddingProvider = embeddingProvider;
+  constructor(model: string) {
+    this.embeddingProvider = this.getEmbeddingProvider(model);
+  }
+
+  private modelToProviderMap = new Map<string, EmbeddingProviders>([
+    // Since Anthropic doesn't have its own embedding model we use Ollama embedding model
+    // Same goes for the rest of models from https://ollama.com
+    [Models.CLAUDE_3_HAIKU, EmbeddingProviders.OLLAMA],
+    [Models.GEMMA_2, EmbeddingProviders.OLLAMA],
+    [Models.PHI_3, EmbeddingProviders.OLLAMA],
+    [Models.LLAMA_3, EmbeddingProviders.OLLAMA],
+    [Models.LLAMA_3_1, EmbeddingProviders.OLLAMA],
+    [Models.MISTRAL_LARGE, EmbeddingProviders.MISTRAL],
+    [Models.DAVINCI_TURBO, EmbeddingProviders.OPEN_AI],
+  ]);
+
+  private getEmbeddingProvider(model: string): EmbeddingProviders | string {
+    return this.modelToProviderMap.get(model) || "Unknown model";
   }
 
   public async generate(input: string): Promise<number[]> {
