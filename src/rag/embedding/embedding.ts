@@ -1,20 +1,40 @@
-import ollama from "ollama";
-import { openaiClient } from "@/rag/llm-clients/openaiClient";
-import { EmbeddingModels, EmbeddingProviders, Models } from "@/types";
-import { EmbeddingModelV1Embedding } from "@ai-sdk/provider";
-import { mistral } from "@/rag/llm-clients/mistral-client";
+import { EmbeddingProviders, Models } from "@/types";
+import { BaseEmbedding } from "@/rag/embedding/base-embedding";
+import { LlamaEmbedding } from "@/rag/embedding/llama-embedding";
+import { MistralEmbedding } from "@/rag/embedding/mistral-embedding";
+import { OpenaiEmbedding } from "@/rag/embedding/openai-embedding";
 
-// TODO: Make this more generic
+type EmbeddingClass = {
+  [key: string]: BaseEmbedding;
+};
+
 export class Embedding {
-  embeddingProvider: string;
+  embeddingProvider: BaseEmbedding;
 
   constructor(model: string) {
-    this.embeddingProvider = this.getEmbeddingProvider(model);
+    this.embeddingProvider = this.embeddingClass[this.getEmbeddingProviderByModel(model)];
   }
+
+  public async generate(input: string): Promise<number[]> {
+    try {
+      return this.embeddingProvider.doEmbed(input);
+    } catch (error: any) {
+      console.error(
+        `An error occurred while generating embedding for with ${this.embeddingProvider} provider!`
+      );
+      throw error;
+    }
+  }
+
+  private embeddingClass: EmbeddingClass = {
+    OLLAMA: new LlamaEmbedding(),
+    MISTRAL: new MistralEmbedding(),
+    OPEN_AI: new OpenaiEmbedding(),
+  };
 
   private modelToProviderMap = new Map<string, EmbeddingProviders>([
     // Since Anthropic doesn't have its own embedding model we use Ollama embedding model
-    // Same goes for the rest of models from https://ollama.com
+    // Same goes for the rest of models from https://ollama.com - gemma2, phi3 ...
     [Models.CLAUDE_3_HAIKU, EmbeddingProviders.OLLAMA],
     [Models.GEMMA_2, EmbeddingProviders.OLLAMA],
     [Models.PHI_3, EmbeddingProviders.OLLAMA],
@@ -24,67 +44,7 @@ export class Embedding {
     [Models.DAVINCI_TURBO, EmbeddingProviders.OPEN_AI],
   ]);
 
-  private getEmbeddingProvider(model: string): EmbeddingProviders | string {
+  private getEmbeddingProviderByModel(model: string): EmbeddingProviders | string {
     return this.modelToProviderMap.get(model) || "Unknown model";
   }
-
-  public async generate(input: string): Promise<number[]> {
-    const embedFunc = EMBED_FUNC[this.embeddingProvider as keyof EmbedFunc];
-
-    try {
-      return embedFunc(input);
-    } catch (error: any) {
-      console.error(
-        `An error occurred while generating embedding for with ${this.embeddingProvider} provider!`
-      );
-      throw error;
-    }
-  }
 }
-
-const embedWithAda002 = async (input: string): Promise<number[]> => {
-  const openAIEmbedding = openaiClient.embedding(EmbeddingModels.OPEN_AI_EMBEDDING, {
-    dimensions: 1536, // TODO: this will probably not work, but check it out
-    user: "test-pd-chat-user",
-  });
-  const embeddingResponse = await openAIEmbedding.doEmbed({ values: [input] });
-
-  // TODO: this has to be tested...
-  return embeddingResponse.embeddings.flatMap((embedding: EmbeddingModelV1Embedding) => embedding);
-};
-
-const embedWithNomic = async (input: string): Promise<number[]> => {
-  const response = await ollama.embeddings({
-    model: EmbeddingModels.OLLAMA_EMBEDDING,
-    prompt: input,
-  });
-
-  return response.embedding;
-};
-
-const embedWithMistral = async (input: string): Promise<number[]> => {
-  const mistralEmbedding = mistral.embedding(EmbeddingModels.MISTRAL_EMBEDDING);
-  const response = await mistralEmbedding.doEmbed({ values: [input] });
-
-  return response.embeddings.flatMap((embedding: EmbeddingModelV1Embedding) => embedding);
-};
-
-type EmbedFunc = {
-  [key: string]: (input: string) => Promise<number[]>;
-};
-
-type Providers = {
-  [key: string]: string;
-};
-
-const EMBED_FUNC: EmbedFunc = {
-  OPEN_AI: embedWithAda002,
-  OLLAMA: embedWithNomic,
-  MISTRAL: embedWithMistral,
-};
-
-export const EMBEDDING_PROVIDERS: Providers = {
-  OPEN_AI: "text-embedding-ada-002",
-  OLLAMA: "nomic-embed-text",
-  MISTRAL: "mistral-embed",
-};
