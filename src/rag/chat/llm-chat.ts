@@ -9,6 +9,7 @@ import { MistralAIChat } from "@/rag/chat/mistral-ai-chat";
 import { Gemma2Chat } from "@/rag/chat/gemma2-chat";
 import { Phi3Chat } from "@/rag/chat/phi3-chat";
 import { getKeyByValue } from "@/utils/helpers";
+import { Llama3_1Chat } from "@/rag/chat/llama3.1-chat";
 
 type ChatClass = {
   [key: string]: BaseLLMChat;
@@ -35,6 +36,7 @@ export class LLMChat {
 
   private chatClass: ChatClass = {
     LLAMA_3: new Llama3Chat(),
+    LLAMA_3_1: new Llama3_1Chat(),
     GEMMA_2: new Gemma2Chat(),
     PHI_3: new Phi3Chat(),
     DAVINCI_TURBO: new OpenAIChat(),
@@ -50,7 +52,8 @@ export class LLMChat {
       llm === Models.CLAUDE_3_HAIKU ||
       llm === Models.GEMMA_2 ||
       llm === Models.PHI_3 ||
-      llm === Models.LLAMA_3
+      llm === Models.LLAMA_3 ||
+      llm === Models.LLAMA_3_1
     ) {
       return EmbeddingProviders.OLLAMA;
     }

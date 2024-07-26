@@ -13,12 +13,17 @@ type LLMProviders = {
 const llmProviders: LLMProviders[] = [
   {
     name: Models.LLAMA_3,
-    description: "ollama3",
+    description: "ollama3:8b",
+    link: "https://ollama.com/library/llama3",
+  },
+  {
+    name: Models.LLAMA_3_1,
+    description: "ollama3.1:8b",
     link: "https://ollama.com/library/llama3",
   },
   {
     name: Models.GEMMA_2,
-    description: "gemma2",
+    description: "gemma2:9b",
     link: "https://ollama.com/library/gemma2",
   },
   {
