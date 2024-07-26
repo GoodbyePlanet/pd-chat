@@ -1,6 +1,7 @@
 export enum Models {
   DAVINCI_TURBO = "gpt-3.5-turbo",
   LLAMA_3 = "llama3",
+  LLAMA_3_1 = "llama3.1",
   GEMMA_2 = "gemma2",
   PHI_3 = "phi3:3.8b",
   CLAUDE_3_HAIKU = "claude-3-haiku-20240307",
