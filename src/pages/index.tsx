@@ -1,42 +1,42 @@
 import { QueryClient, QueryClientProvider } from "react-query";
-import { Inter } from "next/font/google";
+import { RecoilRoot } from "recoil";
 import { useSession } from "next-auth/react";
 import PDChat from "@/components/PDChat";
 import { SignIn } from "@/components/SignIn";
+import Header from "@/components/Header";
 
 import styles from "../components/Loader.module.css";
-import Header from "@/components/Header";
-import { RecoilRoot } from "recoil";
-
-const inter = Inter({ subsets: ["latin"] });
+import { Layout } from "@/components/Layout";
 
 const queryClient = new QueryClient();
 
-function Home() {
+export default function App() {
   const { status } = useSession();
 
   if (status === "loading") {
-    return <span className={styles.loader}></span>;
+    return (
+      <Layout>
+        <span className={styles.loader}></span>
+      </Layout>
+    );
   }
 
   if (status === "authenticated") {
     return (
-      <QueryClientProvider client={queryClient}>
-        <PDChat />
-      </QueryClientProvider>
+      <RecoilRoot>
+        <Header />
+        <Layout>
+          <QueryClientProvider client={queryClient}>
+            <PDChat />
+          </QueryClientProvider>
+        </Layout>
+      </RecoilRoot>
     );
   }
 
-  return <SignIn />;
-}
-
-export default function App() {
   return (
-    <RecoilRoot>
-      <Header />
-      <main className={`flex min-h-screen flex-col items-center justify-center ${inter.className}`}>
-        <Home />
-      </main>
-    </RecoilRoot>
+    <Layout>
+      <SignIn />
+    </Layout>
   );
 }
