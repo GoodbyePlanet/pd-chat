@@ -1,3 +1,5 @@
+import { cosineDistance, desc, gt, sql } from "drizzle-orm";
+import { PgTable } from "drizzle-orm/pg-core";
 import { Databases, Document, Models } from "@/types";
 import { supabaseClient } from "@/database/supabaseClient";
 import { drizzleClient } from "@/database/pg-drizzle-client";
@@ -7,8 +9,6 @@ import {
   documentsMistral as mistralDocuments,
 } from "../../../drizzle-schema";
 import { Embedding } from "../embedding/embedding";
-import { cosineDistance, desc, gt, sql } from "drizzle-orm";
-import { PgTable } from "drizzle-orm/pg-core";
 
 export class DatabaseClient {
   readonly database: string;
