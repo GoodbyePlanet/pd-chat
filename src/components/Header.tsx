@@ -19,7 +19,7 @@ const llmProviders: LLMProviders[] = [
   {
     name: Models.LLAMA_3_1,
     description: "ollama3.1:8b",
-    link: "https://ollama.com/library/llama3",
+    link: "https://ollama.com/library/llama3.1",
   },
   {
     name: Models.GEMMA_2,
