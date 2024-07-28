@@ -1,6 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { supabaseClient } from "@/database/supabaseClient";
-import { LLMChat } from "../../rag/chat/llm-chat";
+import { LLMChat } from "@/rag/chat/llm-chat";
 
 type Data = {
   answer: string;
@@ -9,24 +8,6 @@ type Data = {
 type ErrorResponse = {
   message: string;
 };
-
-type Chunk = {
-  title: string;
-  content: string;
-  docsurl: string;
-};
-
-async function getContentFromDB(
-  embedding: Array<number>
-): Promise<{ data: Array<Chunk>; error: any }> {
-  const { data, error } = await supabaseClient.rpc("match_documents", {
-    query_embedding: embedding,
-    match_threshold: 0.01,
-    match_count: 2,
-  });
-
-  return { data, error };
-}
 
 export default async function handler(
   req: NextApiRequest,

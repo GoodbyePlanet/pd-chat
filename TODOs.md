@@ -7,6 +7,6 @@
 6. Extend ollama to use more than one model - https://ollama.com/library - DONE
 7. Add Mistral AI https://console.mistral.ai/billing/ - DONE
 8. Instead of figuring out where to deploy ollama consider using perplexity of https://console.groq.com/docs/models
-9. Improve those freaking enums and different types
+9. Improve those freaking enums and different types - DONE
 10. Add server logging
-11. Improve README.md
+11. Improve README.md - DONE

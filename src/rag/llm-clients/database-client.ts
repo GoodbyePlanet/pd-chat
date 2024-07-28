@@ -1,6 +1,6 @@
 import { cosineDistance, desc, gt, sql } from "drizzle-orm";
 import { PgTable } from "drizzle-orm/pg-core";
-import { Databases, Document, Models } from "@/types";
+import { Databases, Document, Models, SimilarDocument } from "@/types";
 import { supabaseClient } from "@/database/supabaseClient";
 import { drizzleClient } from "@/database/pg-drizzle-client";
 import {
@@ -88,6 +88,22 @@ const similarDocumentsInSupabase = async (
   queryEmbedding: number[],
   dbName: PgTable
 ): Promise<SimilarDocument[]> => {
+  // type Chunk = {
+  //   title: string;
+  //   content: string;
+  //   docsurl: string;
+  // };
+  // async function getContentFromDB(
+  //   embedding: Array<number>
+  // ): Promise<{ data: Array<Chunk>; error: any }> {
+  //   const { data, error } = await supabaseClient.rpc("match_documents", {
+  //     query_embedding: embedding,
+  //     match_threshold: 0.01,
+  //     match_count: 2,
+  //   });
+  //
+  //   return { data, error };
+  // }
   // TODO: return real data from supabase
   return Promise.resolve([
     {
@@ -139,13 +155,6 @@ type DBClientStoreFunc = {
 type DBClientSimilarityFunc = {
   supabase: SimilarityFunc;
   pgVector: SimilarityFunc;
-};
-
-export type SimilarDocument = {
-  title: string;
-  content: string;
-  docsurl: string;
-  similarity: number;
 };
 
 type DocumentsTable = typeof documents | typeof documentsMistral;

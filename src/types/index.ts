@@ -14,24 +14,15 @@ export enum EmbeddingModels {
   MISTRAL_EMBEDDING = "mistral-embed",
 }
 
-export enum Databases {
-  PG_VECTOR = "pgVector",
-  SUPABASE = "supabase",
-}
-
 export enum EmbeddingProviders {
   OPEN_AI = "OPEN_AI",
   OLLAMA = "OLLAMA",
   MISTRAL = "MISTRAL",
 }
 
-export enum LLM {
-  OPEN_AI = "OPEN_AI",
-  OLLAMA_3 = "OLLAMA_3",
-  GEMMA_2 = "GEMMA_2",
-  PHI_3 = "PHI_3",
-  ANTHROPIC = "ANTHROPIC",
-  MISTRAL = "MISTRAL",
+export enum Databases {
+  PG_VECTOR = "pgVector",
+  SUPABASE = "supabase",
 }
 
 export type Document = {
