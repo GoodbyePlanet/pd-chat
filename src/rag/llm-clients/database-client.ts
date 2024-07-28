@@ -39,14 +39,16 @@ export class DatabaseClient {
 
   public async storeEmbeddingsInDB(documents: Document[], embedding: Embedding): Promise<void> {
     try {
+      const storeEmbeddingsInDB = this.getDBClientStoreFunc();
+      const table = this.getPgTable(this.llmModel);
+
       for (const doc of documents) {
         console.log("Generating embedding for: ", doc.title);
 
         const input = doc.content.replace(/\n/g, " ");
         const embeddings = await embedding.generate(input);
-        const storeEmbeddingsInDB = this.getDBClientStoreFunc();
 
-        storeEmbeddingsInDB(doc, embeddings, this.getPgTable(this.llmModel));
+        storeEmbeddingsInDB(doc, embeddings, table);
         console.log("Embedding stored for: ", doc.title);
       }
     } catch (error: any) {

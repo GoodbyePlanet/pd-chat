@@ -5,11 +5,33 @@ AI powered chat.
 
 ### Setup
 
-Create an account on [OpenAI](https://openai.com) to get API key
+Create an account and get an API key on:
+ - [OpenAI](https://openai.com)
+ - [Mistral](https://console.mistral.ai)
+ - [Anthropic](https://console.anthropic.com)
 
-Create an account on [Supabase](https://supabase.com) to get API keys
+Create an account on [Supabase](https://supabase.com) to get API keys - optional (only if you want to use supabase)
 
-Next create `.env` file and add API keys
+Rename `.env.example` to `.env.local` and add missing keys
+
+### Docker
+
+Run docker-compose to start `pgvector` database
+
+1. Start `pg-vector` DB container
+```bash
+docker-compose -f db-compose.yaml up
+```
+
+2. Create DB tables 
+```bash
+npm run drizzle:migrate
+```
+
+3. Add embeddings for documents (src/documents)
+```bash
+npm run embed
+```
 
 ### Starting development server:
 

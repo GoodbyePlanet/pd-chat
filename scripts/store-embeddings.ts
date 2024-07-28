@@ -1,4 +1,4 @@
-import { Databases, Document, EmbeddingProviders, LLM } from "@/types";
+import { Databases, Document, EmbeddingProviders, Models } from "@/types";
 import { Embedding } from "@/rag/embedding/embedding";
 import { DatabaseClient } from "@/rag/llm-clients/database-client";
 
@@ -21,9 +21,13 @@ import vacationDaysOff from "@/documents/vacation-days-off.json";
     vacationDaysOff,
   ];
 
-  // Here you can change database model and embedding provider
-  const databaseClient = new DatabaseClient(Databases.PG_VECTOR, LLM.OLLAMA_3);
-  const embedding = new Embedding(EmbeddingProviders.OLLAMA);
-
+  // Storing embeddings using Ollama embedding model
+  const databaseClient = new DatabaseClient(Databases.PG_VECTOR, Models.LLAMA_3);
+  const embedding = new Embedding(Models.LLAMA_3);
   await databaseClient.storeEmbeddingsInDB(documents, embedding);
+
+  // Since Mistral embedding model have vectors of dimension 1024 we need to add embeddings to different table
+  const databaseClientMistral = new DatabaseClient(Databases.PG_VECTOR, Models.MISTRAL_LARGE);
+  const embeddingMistral = new Embedding(Models.MISTRAL_LARGE);
+  await databaseClientMistral.storeEmbeddingsInDB(documents, embeddingMistral);
 })();

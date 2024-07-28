@@ -9,3 +9,4 @@
 8. Instead of figuring out where to deploy ollama consider using perplexity of https://console.groq.com/docs/models
 9. Improve those freaking enums and different types
 10. Add server logging
+11. Improve README.md

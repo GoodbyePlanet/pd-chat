@@ -8,7 +8,9 @@
         "build": "next build",
         "start": "next start",
         "lint": "next lint",
-        "embed": "tsx scripts/embed-open-ai-supabase.ts",
+        "drizzle:generate": "npx drizzle-kit generate",
+        "drizzle:migrate": "npx tsx drizzle-migrate.ts",
+        "embed": "tsx scripts/store-embeddings.ts",
         "similarity-search": "tsx scripts/similarity-search.ts"
     },
     "dependencies": {
