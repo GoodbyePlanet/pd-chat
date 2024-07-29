@@ -18,7 +18,8 @@
 
 
 ### DONE ✓
-- [x] Use PostgreSQL/pgvector database 
+- [x] Fix OpenAI, and use "text-embedding-3-small" embedding model
+- [x] Use PostgreSQL/pgvector database
 - [x] Create `db-compose.yaml` and add pgvector database
 - [x] Fix ``12 vulnerabilities (2 low, 8 moderate, 2 high)``
 - [x] Extend ollama to use more than one model - https://ollama.com/library
