@@ -7,6 +7,8 @@ import {
   documents,
   documentsMistral,
   documentsMistral as mistralDocuments,
+  documentsOpenAI,
+  documentsOpenAI as openAIDocuments,
 } from "../../../drizzle-schema";
 import { Embedding } from "../embedding/embedding";
 
@@ -28,13 +30,20 @@ export class DatabaseClient {
   }
 
   /**
-   * Mistral generates embedding vectors of dimension 1024, and ollama, anthropic... are using vectors of dimension 768,
-   * because of this we need different DB table for Mistral
+   * Mistral generates embedding vectors of dimension 1024. OpenAI generates embedding vectors of dimensions 1536.
+   * Ollama, anthropic... are using vectors of dimension 768,
+   * because of this we need different DB table for Mistral and OpenAI
    * @param model
    * @private
    */
   private getPgTable(model: string): DocumentsTable {
-    return model === Models.MISTRAL_LARGE ? mistralDocuments : documents;
+    if (model === Models.MISTRAL_LARGE) {
+      return mistralDocuments;
+    } else if (model === Models.DAVINCI_TURBO) {
+      return openAIDocuments;
+    } else {
+      return documents;
+    }
   }
 
   public async storeEmbeddingsInDB(documents: Document[], embedding: Embedding): Promise<void> {
@@ -157,7 +166,7 @@ type DBClientSimilarityFunc = {
   pgVector: SimilarityFunc;
 };
 
-type DocumentsTable = typeof documents | typeof documentsMistral;
+type DocumentsTable = typeof documents | typeof documentsMistral | typeof documentsOpenAI;
 
 const storeFuncsByDBName: DBClientStoreFunc = {
   [Databases.SUPABASE]: storeInSupabase,

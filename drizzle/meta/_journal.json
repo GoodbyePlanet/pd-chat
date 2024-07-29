@@ -15,6 +15,13 @@
       "when": 1721634467717,
       "tag": "0001_nifty_shen",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1722237753981,
+      "tag": "0002_solid_pestilence",
+      "breakpoints": true
     }
   ]
 }

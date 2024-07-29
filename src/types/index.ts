@@ -9,7 +9,7 @@ export enum Models {
 }
 
 export enum EmbeddingModels {
-  OPEN_AI_EMBEDDING = "text-embedding-ada-002",
+  OPEN_AI_EMBEDDING = "text-embedding-3-small",
   OLLAMA_EMBEDDING = "nomic-embed-text",
   MISTRAL_EMBEDDING = "mistral-embed",
 }

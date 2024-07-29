@@ -30,4 +30,9 @@ import vacationDaysOff from "@/documents/vacation-days-off.json";
   const databaseClientMistral = new DatabaseClient(Databases.PG_VECTOR, Models.MISTRAL_LARGE);
   const embeddingMistral = new Embedding(Models.MISTRAL_LARGE);
   await databaseClientMistral.storeEmbeddingsInDB(documents, embeddingMistral);
+
+  // Since OpenAI embedding model have vectors of dimension 1536 we need to add embeddings to different table
+  const databaseClientOpenAI = new DatabaseClient(Databases.PG_VECTOR, Models.DAVINCI_TURBO);
+  const embeddingOpenAI = new Embedding(Models.DAVINCI_TURBO);
+  await databaseClientOpenAI.storeEmbeddingsInDB(documents, embeddingOpenAI);
 })();
