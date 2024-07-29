@@ -14,6 +14,15 @@ Create an account on [Supabase](https://supabase.com) to get API keys - optional
 
 Rename `.env.example` to `.env.local` and add missing keys
 
+### Ollama - https://ollama.com/
+
+Download ollama client on you machine and following models:
+- llama3.1:latest - https://ollama.com/library/llama3.1
+- llama3:latest - https://ollama.com/library/llama3:latest
+- phi3:3.8b - https://ollama.com/library/phi3
+- gemma2:latest - https://ollama.com/library/gemma:latest
+- nomic-embed-text:latest - https://ollama.com/library/nomic-embed-text:latest
+
 ### Docker
 
 Run docker-compose to start `pgvector` database
