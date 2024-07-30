@@ -1,8 +1,8 @@
 ## TODO
 - [ ] Create docker-compose for running pd-chat locally (database, ...)
+- [ ] Improve error handling
 - [ ] Deploy chat somewhere - check digital ocean or fly.io, check how to deploy ollama models
 - [ ] Instead of figuring out where to deploy ollama consider using perplexity of https://console.groq.com/docs/models
-- [ ] Add server logging
 - [ ] Find a way to initialize chosen chat once instead of initializing it on every request for a new question. So if chosen model is same we don't want to initialize LLMChat again. Only initialize LLMChat if a different model is chosen.
 - [ ] UI:
     - [ ] Use text area for question
@@ -18,6 +18,7 @@
 
 
 ### DONE ✓
+- [x] Add server logging
 - [x] Fix OpenAI, and use "text-embedding-3-small" embedding model
 - [x] Use PostgreSQL/pgvector database
 - [x] Create `db-compose.yaml` and add pgvector database
