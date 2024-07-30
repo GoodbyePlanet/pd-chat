@@ -5,7 +5,7 @@
 - [ ] Instead of figuring out where to deploy ollama consider using perplexity of https://console.groq.com/docs/models
 - [ ] Find a way to initialize chosen chat once instead of initializing it on every request for a new question. So if chosen model is same we don't want to initialize LLMChat again. Only initialize LLMChat if a different model is chosen.
 - [ ] UI:
-    - [ ] Use text area for question
+    - [ ] Use react-textarea-autosize for question
     - [ ] Move input for question on the bottom
     - [ ] Create similar UI like every other chat - message is displayed on the right side, answer bellow it on the left
     - [ ] Add sidebar, PD chat logo, logout button
