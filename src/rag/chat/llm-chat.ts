@@ -10,6 +10,9 @@ import { Gemma2Chat } from "@/rag/chat/gemma2-chat";
 import { Phi3Chat } from "@/rag/chat/phi3-chat";
 import { Llama3_1Chat } from "@/rag/chat/llama3.1-chat";
 import { getKeyByValue } from "@/utils/helpers";
+import { logger } from "@/utils/logger";
+
+const log = logger.child({ module: "LLMChat" }, { level: "info" });
 
 type ChatClass = {
   [key: string]: BaseLLMChat;
@@ -28,6 +31,7 @@ export class LLMChat {
   }
 
   public async getAnswer(userInput: string): Promise<ChatResponse> {
+    log.info(`getAnswer called with user input: "${userInput}"`);
     const embeddings = await this.embedding.generate(this.extractAndSanitizeQuestion(userInput));
     const similarDocs = await this.dbClient.getSimilarDocumentsFromDB(embeddings);
 

@@ -3,6 +3,9 @@ import { BaseEmbedding } from "@/rag/embedding/base-embedding";
 import { LlamaEmbedding } from "@/rag/embedding/llama-embedding";
 import { MistralEmbedding } from "@/rag/embedding/mistral-embedding";
 import { OpenaiEmbedding } from "@/rag/embedding/openai-embedding";
+import { logger } from "@/utils/logger";
+
+const log = logger.child({ module: "Embedding" });
 
 type EmbeddingClass = {
   [key: string]: BaseEmbedding;
@@ -16,10 +19,11 @@ export class Embedding {
   }
 
   public async generate(input: string): Promise<number[]> {
+    log.info(`Generating embeddings for input: ${input}`);
     try {
       return this.embeddingProvider.doEmbed(input);
     } catch (error: any) {
-      console.error(
+      log.error(
         `An error occurred while generating embedding for with ${this.embeddingProvider} provider!`
       );
       throw error;
