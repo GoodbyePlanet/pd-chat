@@ -1,6 +1,9 @@
 import { CoreMessage, generateText, LanguageModel } from "ai";
-import { ChatResponse, SimilarDocument } from "@/types";
 import dedent from "ts-dedent";
+import { ChatResponse, SimilarDocument } from "@/types";
+import { logger } from "@/utils/logger";
+
+const log = logger.child({ module: "BaseLLMChat" }, { level: "error" });
 
 export abstract class BaseLLMChat {
   protected abstract model: LanguageModel;
@@ -16,6 +19,7 @@ export abstract class BaseLLMChat {
     });
 
     if (response.finishReason === "error") {
+      log.error("An error occurred while generating chat response");
       return { error: "Could not generate chat completion!" };
     }
 
