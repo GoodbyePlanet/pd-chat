@@ -1,6 +1,6 @@
 import { ReactElement, useRef } from "react";
 import { useMutation } from "react-query";
-import SearchBox from "@/components/Search";
+import ChatForm from "@/components/ChatForm";
 import { Answer } from "@/components/Answer";
 
 import styles from "./Loader.module.css";
@@ -40,7 +40,7 @@ export default function PDChat(): ReactElement {
   );
   const currentLlmProvider = useRecoilValue(llmProviderState);
 
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
 
   const saveQuestion = async (question: string): Promise<void> => {
     await fetch("/api/save-question", {
@@ -69,33 +69,35 @@ export default function PDChat(): ReactElement {
 
   return (
     <>
-      <div className="w-4/5 md:w-3/5 lg:w-3/5">
-        <p className="mb-5 text-center italic">
-          Please note that this is the <span className="font-medium">MVP version</span>, and there
-          is a possibility of receiving incorrect answers. We kindly request you to submit any such
-          instances so that we can improve them in future iterations. Presently, you can inquire
-          about the following topics:{" "}
-          <span className="font-medium">
-            Profit Share, Knowledge Sharing, Company Culture, Vacation and Days Off, Benefits, and
-            Time Tracking.
-          </span>
-        </p>
-        <SearchBox onSearch={handleCreateQuestion} inputRef={inputRef} />
-        {mutation.isLoading && <span className={styles.loader}></span>}
-        {mutation.isSuccess && (
-          <div className="mt-5">
-            <Answer
-              question={mutation.variables?.question as string}
-              text={mutation.data?.answer as string}
-            />
-          </div>
-        )}
-        {isTimeoutError && (
-          <ErrorMessage message="Sorry for inconvenience, OpenAI is busy right now, please ask a question later!" />
-        )}
-        {mutation.isError && !isTimeoutError && (
-          <ErrorMessage message="Sorry for inconvenience, we are experiencing issues on the server, please ask a question later!" />
-        )}
+      <div className="stretch mx-2 flex flex-col gap-3 last:mb-2 md:mx-4 md:last:mb-6 lg:mx-auto lg:max-w-2xl xl:max-w-3xl">
+        <div className="flex h-90vh flex-col items-center justify-center">
+          <p className="text-center italic">
+            Please note that this is the <span className="font-medium">MVP version</span>, and there
+            is a possibility of receiving incorrect answers. We kindly request you to submit any
+            such instances so that we can improve them in future iterations. Presently, you can
+            inquire about the following topics:{" "}
+            <span className="font-medium">
+              Profit Share, Knowledge Sharing, Company Culture, Vacation and Days Off, Benefits, and
+              Time Tracking.
+            </span>
+          </p>
+          {mutation.isLoading && <span className={styles.loader}></span>}
+          {mutation.isSuccess && (
+            <div className="mt-5">
+              <Answer
+                question={mutation.variables?.question as string}
+                text={mutation.data?.answer as string}
+              />
+            </div>
+          )}
+          {isTimeoutError && (
+            <ErrorMessage message="Sorry for inconvenience, OpenAI is busy right now, please ask a question later!" />
+          )}
+          {mutation.isError && !isTimeoutError && (
+            <ErrorMessage message="Sorry for inconvenience, we are experiencing issues on the server, please ask a question later!" />
+          )}
+        </div>
+        <ChatForm onSearch={handleCreateQuestion} inputRef={inputRef} />
       </div>
     </>
   );
