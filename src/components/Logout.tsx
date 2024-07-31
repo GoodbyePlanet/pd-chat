@@ -5,7 +5,7 @@ export const Logout = (): ReactElement => (
   <div>
     <button
       onClick={() => signOut()}
-      className="border-gray-400 rounded border bg-white px-4 py-2 font-semibold text-pd shadow"
+      className="border-gray-400 rounded border bg-white px-4 py-2 font-semibold shadow"
     >
       <div className="flex items-center">
         <svg

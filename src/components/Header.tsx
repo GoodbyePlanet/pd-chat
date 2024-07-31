@@ -64,8 +64,11 @@ export default function Header(): ReactElement {
   };
 
   return (
-    <header className="bg-white">
-      <nav aria-label="Global" className="mx-auto flex items-center justify-between p-6 lg:px-8">
+    <header className="absolute flex w-full content-between bg-white">
+      <nav
+        aria-label="Global"
+        className="mx-auto flex w-full items-center justify-between p-2 lg:px-8"
+      >
         <div className="flex">
           <span className="">PD Chat</span>
         </div>
