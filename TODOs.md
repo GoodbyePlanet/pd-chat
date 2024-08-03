@@ -1,5 +1,10 @@
 ## TODO
 - [ ] Create docker-compose for running pd-chat locally (database, ...)
+- [ ] Use mongoDB for storing messages
+    - [ ] Create mongoDB connection using mongoose https://github.com/Automattic/mongoose/
+    - [ ] Create messages tree structure for chat messaging
+    - [ ] Create API endpoint for storing messages in mongoDB
+- [ ] Create React recursive component for displaying messages
 - [ ] Improve error handling
 - [ ] Deploy chat somewhere - check digital ocean or fly.io, check how to deploy ollama models
 - [ ] Instead of figuring out where to deploy ollama consider using perplexity of https://console.groq.com/docs/models
@@ -15,6 +20,7 @@
 - [ ] Think about how to separate PD chat about PD docs and chat about anything else
 - [ ] UI: Add option to upload PDF document
 - [ ] Add an option to have Named Entity Recognition (NER)
+- [ ] Add an option to tweak model temperature
 
 
 ### DONE ✓
