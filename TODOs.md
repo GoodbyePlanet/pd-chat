@@ -1,4 +1,5 @@
 ## TODO
+- [ ] Update ollama-ai-provider to the latest version
 - [ ] Create docker-compose for running pd-chat locally (database, ...)
 - [ ] Use mongoDB for storing messages
     - [ ] Create mongoDB connection using mongoose https://github.com/Automattic/mongoose/
