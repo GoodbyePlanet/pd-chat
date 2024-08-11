@@ -6,12 +6,11 @@ import { EmbeddingModels } from "@/types";
 export class OpenaiEmbedding extends BaseEmbedding {
   public async doEmbed(input: string): Promise<Array<number>> {
     const openAIEmbedding = openaiClient.embedding(EmbeddingModels.OPEN_AI_EMBEDDING, {
-      dimensions: 1536, // TODO: this will probably not work, but check it out
+      dimensions: 1536,
       user: "test-pd-chat-user",
     });
     const embeddingResponse = await openAIEmbedding.doEmbed({ values: [input] });
 
-    // TODO: this has to be tested...
     return embeddingResponse.embeddings.flatMap(
       (embedding: EmbeddingModelV1Embedding) => embedding
     );
