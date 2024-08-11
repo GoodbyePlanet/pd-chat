@@ -1,7 +1,8 @@
+import { LanguageModelV1 } from "@ai-sdk/provider";
 import { BaseLLMChat } from "@/rag/chat/base-llm-chat";
 import { ollama } from "@/rag/llm-clients/ollamaClient";
 import { Models } from "@/types";
 
 export class Gemma2Chat extends BaseLLMChat {
-  protected model = ollama.chat(Models.GEMMA_2);
+  protected model = ollama.chat(Models.GEMMA_2) as LanguageModelV1;
 }
