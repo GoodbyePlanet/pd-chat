@@ -25,6 +25,7 @@
 
 
 ### DONE ✓
+- [x] Update ollama-ai-provider to the latest version
 - [x] Add server logging
 - [x] Fix OpenAI, and use "text-embedding-3-small" embedding model
 - [x] Use PostgreSQL/pgvector database
