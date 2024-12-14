@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  db:
+  vector_db:
     image: ankane/pgvector:latest
     environment:
       POSTGRES_DB: pd-chat
@@ -11,6 +11,12 @@ services:
       - pgdata2:/var/lib/postgresql/data
     ports:
       - "5433:5432"
+  chat_db:
+    image: mongo
+    volumes:
+      - ./data-node:/data/db
+    ports:
+      - "27018:27017"
 
 volumes:
   pgdata2:

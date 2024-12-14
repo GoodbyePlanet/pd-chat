@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { LLMChat } from "@/rag/chat/llm-chat";
+import dbChatConnection from "@/database/mongo-chat-client";
 
 type Data = {
   answer: string;
@@ -14,6 +15,7 @@ export default async function handler(
   res: NextApiResponse<Data | ErrorResponse>
 ) {
   try {
+    await dbChatConnection();
     const llm = req.body?.llm;
 
     if (!llm) {

@@ -4,9 +4,9 @@ import { useSession } from "next-auth/react";
 import PDChat from "@/components/PDChat";
 import { SignIn } from "@/components/SignIn";
 import Header from "@/components/Header";
+import { Layout } from "@/components/Layout";
 
 import styles from "../components/Loader.module.css";
-import { Layout } from "@/components/Layout";
 
 const queryClient = new QueryClient();
 

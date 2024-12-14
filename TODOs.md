@@ -1,7 +1,6 @@
 ## TODO
 - [ ] Create docker-compose for running pd-chat locally (database, ...)
 - [ ] Use mongoDB for storing messages
-    - [ ] Create mongoDB connection using mongoose https://github.com/Automattic/mongoose/
     - [ ] Create messages tree structure for chat messaging
     - [ ] Create API endpoint for storing messages in mongoDB
 - [ ] Create React recursive component for displaying messages
@@ -24,6 +23,8 @@
 
 
 ### DONE ✓
+- [ ] Use mongoDB for storing messages
+    - [x] Create mongoDB connection using mongoose https://github.com/Automattic/mongoose/
 - [x] Update ollama-ai-provider to the latest version
 - [x] Add server logging
 - [x] Fix OpenAI, and use "text-embedding-3-small" embedding model
